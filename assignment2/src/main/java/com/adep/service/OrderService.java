@@ -1,5 +1,7 @@
 package com.adep.service;
 
-public interface OrderService {
+import com.adep.dto.OrderDto;
 
+public interface OrderService {
+	OrderDto getOderByOderId(String orderId) throws Exception;
 }
