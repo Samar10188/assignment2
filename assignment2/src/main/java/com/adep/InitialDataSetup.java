@@ -25,23 +25,23 @@ import com.adep.entity.ReturnEntity;
 import com.adep.repository.OrderRepository;
 import com.adep.repository.ReturnRepository;
 
-@Component // #comment this line
+//@Component // #comment this line
 public class InitialDataSetup {
 
 //	@Autowired // #comment this line
 //	private OrderRepository orderRepository; // #comment this line
 
-	@Autowired // #comment this line
-	private ReturnRepository returnRepository;
+//	@Autowired // #comment this line
+//	private ReturnRepository returnRepository;
 
-	@EventListener // #comment this line
+//	@EventListener // #comment this line
 	public void onApplicationEvent(ApplicationReadyEvent event) throws IOException, ParseException {
 		System.out.println("Starting application");
 
 		// Absolute path of excel
 		String excelFilePath = "G:\\Infy\\ADEP\\work_space\\assignment2\\SuperStore.xlsx";
-//		orderEntityData(excelFilePath); // Call OrderEntity data method
-		returnEntityData(excelFilePath); // Call ReturnEntity data method
+		orderEntityData(excelFilePath); // Call OrderEntity data method
+//		returnEntityData(excelFilePath); // Call ReturnEntity data method
 
 	}
 
@@ -115,7 +115,7 @@ public class InitialDataSetup {
 		}
 		System.out.println("Executing " + dataList.size()+" records");
 		excelWorkBook.close();
-		returnRepository.saveAll(returnEntities); // #comment this line
+//		returnRepository.saveAll(returnEntities); // #comment this line
 		System.out.println("Done with " + dataList.size() + " records");
 	}
 
@@ -138,7 +138,8 @@ public class InitialDataSetup {
 		System.out.println("Total row count : " + rowCount1);
 
 		if (dataList != null) {
-			for (int i = 1; i < rowCount1; i++) {
+//			for (int i = 1; i < rowCount1; i++) {
+			for (int i = 1; i < 101; i++) {
 				List<String> dataRow = dataList.get(i);
 				OrderEntity orderEntity = new OrderEntity();
 				orderEntity.setRowId(Double.parseDouble(dataRow.get(0)));
@@ -158,7 +159,7 @@ public class InitialDataSetup {
 				orderEntity.setMarket(dataRow.get(12));
 				orderEntity.setRegion(dataRow.get(13));
 				orderEntity.setProductId(dataRow.get(14));
-				orderEntity.setCategory(dataRow.get(5));
+				orderEntity.setCategory(dataRow.get(15));
 				orderEntity.setSubCategory(dataRow.get(16));
 				orderEntity.setProductName(dataRow.get(17));
 				orderEntity.setSales(Double.parseDouble(dataRow.get(18)));
