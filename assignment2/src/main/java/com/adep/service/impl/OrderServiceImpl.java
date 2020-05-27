@@ -340,9 +340,9 @@ public class OrderServiceImpl implements OrderService {
 			dataValueNameColor.setY(dataSalesDiscountProfit.getSales());
 			dataValueNameColor.setName(dataSalesDiscountProfit.getSubCategory());
 			if (dataSalesDiscountProfit.getSales() > 0) {
-				dataValueNameColor.setColor("Green");
+				dataValueNameColor.setColor("green");
 			} else {
-				dataValueNameColor.setColor("Red");
+				dataValueNameColor.setColor("red");
 			}
 			getDataValueNameColor.add(dataValueNameColor);
 		}
@@ -361,9 +361,9 @@ public class OrderServiceImpl implements OrderService {
 			dataValueNameColor.setY(dataSalesDiscountProfit.getProfit());
 			dataValueNameColor.setName(dataSalesDiscountProfit.getSubCategory());
 			if (dataSalesDiscountProfit.getProfit() > 0) {
-				dataValueNameColor.setColor("Green");
+				dataValueNameColor.setColor("green");
 			} else {
-				dataValueNameColor.setColor("Red");
+				dataValueNameColor.setColor("red");
 			}
 			getDataValueNameColor.add(dataValueNameColor);
 		}
@@ -382,9 +382,9 @@ public class OrderServiceImpl implements OrderService {
 			dataValueNameColor.setY(dataSalesDiscountProfit.getDiscount());
 			dataValueNameColor.setName(dataSalesDiscountProfit.getSubCategory());
 			if (dataSalesDiscountProfit.getDiscount() > 0) {
-				dataValueNameColor.setColor("Red");
+				dataValueNameColor.setColor("red");
 			} else {
-				dataValueNameColor.setColor("Green");
+				dataValueNameColor.setColor("green");
 			}
 			getDataValueNameColor.add(dataValueNameColor);
 		}
