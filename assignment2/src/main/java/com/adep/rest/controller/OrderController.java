@@ -15,7 +15,6 @@ import com.adep.rest.response.SalesProfitDiscountValueResponse;
 import com.adep.rest.response.SeriesDataResponse;
 import com.adep.service.OrderService;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
-import com.adep.shared.model.SalesProfitDiscountValue;
 import com.adep.shared.model.SeriesData;
 
 @RestController
