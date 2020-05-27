@@ -31,8 +31,8 @@ public class InitialDataSetup {
 //	@Autowired // #comment this line
 //	private OrderRepository orderRepository; // #comment this line
 
-//	@Autowired // #comment this line
-//	private ReturnRepository returnRepository;
+	@Autowired // #comment this line
+	private ReturnRepository returnRepository;
 
 //	@EventListener // #comment this line
 	public void onApplicationEvent(ApplicationReadyEvent event) throws IOException, ParseException {
@@ -42,7 +42,7 @@ public class InitialDataSetup {
 		String excelFilePath = "G:\\Infy\\ADEP\\work_space\\assignment2\\SuperStore.xlsx";
 		orderEntityData(excelFilePath); // Call OrderEntity data method
 //		returnEntityData(excelFilePath); // Call ReturnEntity data method
-
+		System.out.println("Completed");
 	}
 
 	/*
@@ -115,7 +115,7 @@ public class InitialDataSetup {
 		}
 		System.out.println("Executing " + dataList.size()+" records");
 		excelWorkBook.close();
-//		returnRepository.saveAll(returnEntities); // #comment this line
+		returnRepository.saveAll(returnEntities); // #comment this line
 		System.out.println("Done with " + dataList.size() + " records");
 	}
 
@@ -138,8 +138,8 @@ public class InitialDataSetup {
 		System.out.println("Total row count : " + rowCount1);
 
 		if (dataList != null) {
-//			for (int i = 1; i < rowCount1; i++) {
-			for (int i = 1; i < 101; i++) {
+			for (int i = 1; i < rowCount1; i++) {
+//			for (int i = 1; i < 101; i++) {
 				List<String> dataRow = dataList.get(i);
 				OrderEntity orderEntity = new OrderEntity();
 				orderEntity.setRowId(Double.parseDouble(dataRow.get(0)));

@@ -14,6 +14,8 @@ import com.adep.repository.OrderRepository;
 import com.adep.service.OrderService;
 import com.adep.shared.model.DataCategory;
 import com.adep.shared.model.DataSalesDiscountProfit;
+import com.adep.shared.model.DataValueNameColor;
+import com.adep.shared.model.SalesProfitDiscountValue;
 import com.adep.shared.model.SeriesData;
 
 @Service
@@ -87,16 +89,307 @@ public class OrderServiceImpl implements OrderService {
 		return seriesData;
 	}
 
-	private List<Double> getDataProfit(List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
+	@Override
+	public SalesProfitDiscountValue getSalesProfitDiscountValueByCountry(String country) {
+		if (country.contains("world")) {
+			country = ".*";
+		}
 
-		List<Double> dataProfit = new ArrayList<>();
+		List<OrderEntity> list = new ArrayList<>();
+		Iterable<OrderEntity> orderAll = orderRepository.findByCountry(country);
+		for (OrderEntity orderEntity : orderAll) {
+			list.add(orderEntity);
+		}
+		DataCategory dataCategory = allCountryData(list);
+
+		List<DataSalesDiscountProfit> dataSalesDiscountProfit = new ArrayList<>();
+		Double vaueZero = (double) 0;
+		if (dataCategory.getDataAccessories().isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Accessories");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Technology");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataAccessories()));
+		}
+
+		if (dataCategory.getDataAppliances().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Appliances");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataAppliances()));
+		}
+		if (dataCategory.getDataArt().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Arts");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataArt()));
+		}
+		if (dataCategory.getDataBookcases().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Bookcases");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Furniture");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataBookcases()));
+		}
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataBinders()));
+		if (dataCategory.getDataChairs().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Chairs");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Furniture");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataChairs()));
+		}
+		if (dataCategory.getDataCopiers().isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Copiers");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Technology");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCopiers()));
+		}
+		if (dataCategory.getDataArt().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Envelopes");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataEnvelopes()));
+		}
+		if (dataCategory.getDataFasteners().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Fasteners");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataFasteners()));
+
+		}
+
+		if (dataCategory.getDataFurnishings().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Furnishings");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Furniture");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataFurnishings()));
+		}
+		if (dataCategory.getDataLabels().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Labels");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataLabels()));
+		}
+		if (dataCategory.getDataMachines().isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Machines");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Technology");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataMachines()));
+		}
+		if (dataCategory.getDataPaper().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Paper");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataPaper()));
+		}
+
+		if (dataCategory.getDataPhones().isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Phones");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Technology");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataPhones()));
+		}
+		if (dataCategory.getDataStorage().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Storage");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataStorage()));
+		}
+		if (dataCategory.getDataSupplies().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Supplies");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Office Supplies");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataSupplies()));
+		}
+		if (dataCategory.getDataTables().size() == 0) {
+			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
+			dataSalesDiscountProfits.setSubCategory("Tables");
+			dataSalesDiscountProfits.setDiscount(vaueZero);
+			dataSalesDiscountProfits.setProfit(vaueZero);
+			dataSalesDiscountProfits.setSales(vaueZero);
+			dataSalesDiscountProfits.setCategory("Furniture");
+			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
+			accList.add(dataSalesDiscountProfits);
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
+		} else {
+			dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataTables()));
+		}
+		List<DataValueNameColor> salesData = getSalesDataValueNameColor(dataSalesDiscountProfit);
+		List<DataValueNameColor> profitData = getProfitDataValueNameColor(dataSalesDiscountProfit);
+		List<DataValueNameColor> discountData = getDiscountDataValueNameColor(dataSalesDiscountProfit);
+
+		SalesProfitDiscountValue salesProfitDiscountValue = new SalesProfitDiscountValue();
+		salesProfitDiscountValue.setSalesData(salesData);
+		salesProfitDiscountValue.setDiscountData(discountData);
+		salesProfitDiscountValue.setProfitData(profitData);
+
+		return salesProfitDiscountValue;
+	}
+
+	private List<DataValueNameColor> getSalesDataValueNameColor(
+			List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
+
+		List<DataValueNameColor> getDataValueNameColor = new ArrayList<>();
 
 		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
 			DataSalesDiscountProfit dataSalesDiscountProfit = dataSalesDiscountProfits.get(i);
-			dataProfit.add(dataSalesDiscountProfit.getProfit());
+			DataValueNameColor dataValueNameColor = new DataValueNameColor();
+			dataValueNameColor.setValue(dataSalesDiscountProfit.getSales());
+			dataValueNameColor.setName(dataSalesDiscountProfit.getSubCategory());
+			if (dataSalesDiscountProfit.getSales() > 0) {
+				dataValueNameColor.setColor("Green");
+			} else {
+				dataValueNameColor.setColor("Red");
+			}
+			getDataValueNameColor.add(dataValueNameColor);
 		}
 
-		return dataProfit;
+		return getDataValueNameColor;
+	}
+
+	private List<DataValueNameColor> getProfitDataValueNameColor(
+			List<DataSalesDiscountProfit> dataProfitDiscountProfits) {
+
+		List<DataValueNameColor> getDataValueNameColor = new ArrayList<>();
+
+		for (int i = 0; i < dataProfitDiscountProfits.size(); i++) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = dataProfitDiscountProfits.get(i);
+			DataValueNameColor dataValueNameColor = new DataValueNameColor();
+			dataValueNameColor.setValue(dataSalesDiscountProfit.getProfit());
+			dataValueNameColor.setName(dataSalesDiscountProfit.getSubCategory());
+			if (dataSalesDiscountProfit.getProfit() > 0) {
+				dataValueNameColor.setColor("Green");
+			} else {
+				dataValueNameColor.setColor("Red");
+			}
+			getDataValueNameColor.add(dataValueNameColor);
+		}
+
+		return getDataValueNameColor;
+	}
+
+	private List<DataValueNameColor> getDiscountDataValueNameColor(
+			List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
+
+		List<DataValueNameColor> getDataValueNameColor = new ArrayList<>();
+
+		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = dataSalesDiscountProfits.get(i);
+			DataValueNameColor dataValueNameColor = new DataValueNameColor();
+			dataValueNameColor.setValue(dataSalesDiscountProfit.getDiscount());
+			dataValueNameColor.setName(dataSalesDiscountProfit.getSubCategory());
+			if (dataSalesDiscountProfit.getDiscount() > 0) {
+				dataValueNameColor.setColor("Red");
+			} else {
+				dataValueNameColor.setColor("Green");
+			}
+			getDataValueNameColor.add(dataValueNameColor);
+		}
+
+		return getDataValueNameColor;
 	}
 
 	private List<Double> getDataSales(List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
@@ -105,9 +398,7 @@ public class OrderServiceImpl implements OrderService {
 		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
 			DataSalesDiscountProfit dataSalesDiscountProfit = dataSalesDiscountProfits.get(i);
 			dataSales.add(dataSalesDiscountProfit.getSales());
-
 		}
-
 		return dataSales;
 	}
 
@@ -119,6 +410,16 @@ public class OrderServiceImpl implements OrderService {
 			dataDiscount.add(dataSalesDiscountProfit.getDiscount());
 		}
 		return dataDiscount;
+	}
+
+	private List<Double> getDataProfit(List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
+
+		List<Double> dataProfit = new ArrayList<>();
+		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = dataSalesDiscountProfits.get(i);
+			dataProfit.add(dataSalesDiscountProfit.getProfit());
+		}
+		return dataProfit;
 	}
 
 	private DataCategory allCountryData(List<OrderEntity> orders) {
@@ -252,6 +553,8 @@ public class OrderServiceImpl implements OrderService {
 		Double avgDiscount = (double) 0;
 
 		int totalData = dataSubCategory.size();
+		String subCategory = "";
+		String category = "";
 
 		for (int i = 0; i < totalData; i++) {
 
@@ -264,11 +567,17 @@ public class OrderServiceImpl implements OrderService {
 		}
 		if (totalData > 0) {
 			avgDiscount = discount / dataSubCategory.size();
+			subCategory = dataSubCategory.get(0).getSubCategory();
+			category = dataSubCategory.get(0).getCategory();
+
 		}
 		DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+
 		dataSalesDiscountProfit.setDiscount(avgDiscount);
 		dataSalesDiscountProfit.setProfit(profit);
 		dataSalesDiscountProfit.setSales(sales);
+		dataSalesDiscountProfit.setSubCategory(subCategory);
+		dataSalesDiscountProfit.setCategory(category);
 
 		return dataSalesDiscountProfit;
 	}

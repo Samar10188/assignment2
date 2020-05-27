@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.adep.dto.OrderDto;
 import com.adep.rest.response.OrderModelResponse;
+import com.adep.rest.response.SalesProfitDiscountValueResponse;
 import com.adep.rest.response.SeriesDataResponse;
 import com.adep.service.OrderService;
+import com.adep.shared.model.SalesProfitDiscountValue;
 import com.adep.shared.model.SeriesData;
 
 @RestController
@@ -35,7 +37,7 @@ public class OrderController {
 	}
 
 	@GetMapping("/getDataSalesDiscountProfit")
-	public SeriesDataResponse getByCountry() {
+	public SeriesDataResponse getDataSalesDiscountProfit() {
 
 		List<SeriesData> seriesData = orderService.getDataSalesDiscountProfit();
 
@@ -43,6 +45,17 @@ public class OrderController {
 		seriesDataResponse.setSeriesData(seriesData);
 
 		return seriesDataResponse;
+	}
+
+	@GetMapping("/salesProfitDiscountValue")
+	public SalesProfitDiscountValueResponse getSalesProfitDiscountValueByCountry(
+			@RequestParam(value = "country", defaultValue = "world", required = false) String country) {
+
+		SalesProfitDiscountValue salesProfitDiscountValue = orderService.getSalesProfitDiscountValueByCountry(country);
+		SalesProfitDiscountValueResponse salesProfitDiscountValueResponse = new SalesProfitDiscountValueResponse();
+		salesProfitDiscountValueResponse.setSalesProfitDiscountValue(salesProfitDiscountValue);
+
+		return salesProfitDiscountValueResponse;
 	}
 
 }
