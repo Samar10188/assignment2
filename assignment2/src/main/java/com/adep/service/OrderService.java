@@ -3,7 +3,7 @@ package com.adep.service;
 import java.util.List;
 
 import com.adep.dto.OrderDto;
-import com.adep.shared.model.SalesProfitDiscountValue;
+import com.adep.shared.model.AllSalesDiscountProfitValue;
 import com.adep.shared.model.SeriesData;
 
 public interface OrderService {
@@ -11,6 +11,6 @@ public interface OrderService {
 
 	List<SeriesData> getDataSalesDiscountProfit();
 	
-	SalesProfitDiscountValue getSalesProfitDiscountValueByCountry(String country);
+	AllSalesDiscountProfitValue getSalesProfitDiscountValueByCountry(String country);
 
 }

@@ -1,12 +1,9 @@
 package com.adep.shared.model;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class SalesProfitDiscountValue implements Serializable {
-
-	private static final long serialVersionUID = -8361672472982019562L;
-
+public class TechnologySalesProfitDiscountValue {
+	
 	private List<DataValueNameColor> salesData;
 	private List<DataValueNameColor> profitData;
 	private List<DataValueNameColor> discountData;

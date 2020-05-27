@@ -14,6 +14,7 @@ import com.adep.rest.response.OrderModelResponse;
 import com.adep.rest.response.SalesProfitDiscountValueResponse;
 import com.adep.rest.response.SeriesDataResponse;
 import com.adep.service.OrderService;
+import com.adep.shared.model.AllSalesDiscountProfitValue;
 import com.adep.shared.model.SalesProfitDiscountValue;
 import com.adep.shared.model.SeriesData;
 
@@ -51,7 +52,7 @@ public class OrderController {
 	public SalesProfitDiscountValueResponse getSalesProfitDiscountValueByCountry(
 			@RequestParam(value = "country", defaultValue = "world", required = false) String country) {
 
-		SalesProfitDiscountValue salesProfitDiscountValue = orderService.getSalesProfitDiscountValueByCountry(country);
+		AllSalesDiscountProfitValue salesProfitDiscountValue = orderService.getSalesProfitDiscountValueByCountry(country);
 		SalesProfitDiscountValueResponse salesProfitDiscountValueResponse = new SalesProfitDiscountValueResponse();
 		salesProfitDiscountValueResponse.setSalesProfitDiscountValue(salesProfitDiscountValue);
 
