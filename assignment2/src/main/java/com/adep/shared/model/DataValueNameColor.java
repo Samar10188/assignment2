@@ -6,16 +6,16 @@ public class DataValueNameColor implements Serializable {
 
 	private static final long serialVersionUID = -3175406547260558814L;
 
-	private Double value;
+	private Double y;
 	private String name;
 	private String color;
 
-	public Double getValue() {
-		return value;
+	public Double getY() {
+		return y;
 	}
 
-	public void setValue(Double value) {
-		this.value = value;
+	public void setY(Double y) {
+		this.y = y;
 	}
 
 	public String getName() {
