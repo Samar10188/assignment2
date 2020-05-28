@@ -25,23 +25,23 @@ import com.adep.entity.ReturnEntity;
 import com.adep.repository.OrderRepository;
 import com.adep.repository.ReturnRepository;
 
-//@Component // #comment this line
+@Component // #comment this line
 public class InitialDataSetup {
 
 //	@Autowired // #comment this line
 //	private OrderRepository orderRepository; // #comment this line
 
-	@Autowired // #comment this line
-	private ReturnRepository returnRepository;
+//	@Autowired // #comment this line
+//	private ReturnRepository returnRepository;
 
 //	@EventListener // #comment this line
 	public void onApplicationEvent(ApplicationReadyEvent event) throws IOException, ParseException {
-		System.out.println("Starting application");
+		System.out.println("Starting application....................");
 
 		// Absolute path of excel
 		String excelFilePath = "G:\\Infy\\ADEP\\work_space\\assignment2\\SuperStore.xlsx";
-		orderEntityData(excelFilePath); // Call OrderEntity data method
-//		returnEntityData(excelFilePath); // Call ReturnEntity data method
+//		orderEntityData(excelFilePath); // Call OrderEntity data method
+		returnEntityData(excelFilePath); // Call ReturnEntity data method
 		System.out.println("Completed");
 	}
 
@@ -115,7 +115,7 @@ public class InitialDataSetup {
 		}
 		System.out.println("Executing " + dataList.size()+" records");
 		excelWorkBook.close();
-		returnRepository.saveAll(returnEntities); // #comment this line
+//		returnRepository.saveAll(returnEntities); // #comment this line
 		System.out.println("Done with " + dataList.size() + " records");
 	}
 
