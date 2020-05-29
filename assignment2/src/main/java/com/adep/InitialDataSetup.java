@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,26 +25,48 @@ import org.springframework.stereotype.Component;
 import com.adep.entity.OrderEntity;
 import com.adep.entity.ReturnEntity;
 import com.adep.repository.OrderRepository;
-import com.adep.repository.ReturnRepository;
+import com.adep.service.OrderService;
+import com.adep.shared.model.YearSalesProfitDiscountQuantity;
 
 @Component // #comment this line
 public class InitialDataSetup {
 
-//	@Autowired // #comment this line
-//	private OrderRepository orderRepository; // #comment this line
+	@Autowired // #comment this line
+	private OrderRepository orderRepository; // #comment this line
 
 //	@Autowired // #comment this line
 //	private ReturnRepository returnRepository;
 
-//	@EventListener // #comment this line
+	@Autowired
+	private OrderService orderService;
+
+	@EventListener // #comment this line
 	public void onApplicationEvent(ApplicationReadyEvent event) throws IOException, ParseException {
 		System.out.println("Starting application....................");
 
+//		List<OrderEntity> orders = orderService.getByYear("2011", ".*", ".*", ".*", ".*");
+
 		// Absolute path of excel
-		String excelFilePath = "G:\\Infy\\ADEP\\work_space\\assignment2\\SuperStore.xlsx";
+//		String excelFilePath = "G:\\Infy\\ADEP\\work_space\\assignment2\\SuperStore.xlsx";
 //		orderEntityData(excelFilePath); // Call OrderEntity data method
-		returnEntityData(excelFilePath); // Call ReturnEntity data method
-		System.out.println("Completed");
+//		returnEntityData(excelFilePath); // Call ReturnEntity data method
+		
+	
+		
+		/*
+		 * String category="all"; String subCategory="all"; String region="all"; String
+		 * segment="all";
+		 * 
+		 * if (category.contains("all")) { category = ".*"; } if
+		 * (subCategory.contains("all")) { subCategory = ".*"; } if
+		 * (region.contains("all")) { region = ".*"; } if (segment.contains("all")) {
+		 * segment = ".*"; }
+		 * 
+		 * List<YearSlaesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity =
+		 * orderService.getByYear(category, subCategory, region, segment);
+		 */
+
+
 	}
 
 	/*
@@ -113,7 +137,7 @@ public class InitialDataSetup {
 //				System.out.println(str);
 			}
 		}
-		System.out.println("Executing " + dataList.size()+" records");
+		System.out.println("Executing " + dataList.size() + " records");
 		excelWorkBook.close();
 //		returnRepository.saveAll(returnEntities); // #comment this line
 		System.out.println("Done with " + dataList.size() + " records");
@@ -138,8 +162,8 @@ public class InitialDataSetup {
 		System.out.println("Total row count : " + rowCount1);
 
 		if (dataList != null) {
-			for (int i = 1; i < rowCount1; i++) {
-//			for (int i = 1; i < 101; i++) {
+//			for (int i = 1; i < rowCount1; i++) {
+			for (int i = 1; i < 101; i++) {
 				List<String> dataRow = dataList.get(i);
 				OrderEntity orderEntity = new OrderEntity();
 				orderEntity.setRowId(Double.parseDouble(dataRow.get(0)));
@@ -173,9 +197,9 @@ public class InitialDataSetup {
 //				System.out.println(str);
 			}
 		}
-		System.out.println("Executing : " + dataList.size()+" records");
+		System.out.println("Executing : " + dataList.size() + " records");
 		excelWorkBook.close();
-//		orderRepository.saveAll(orderEntities); //#comment this line
+		orderRepository.saveAll(orderEntities); //#comment this line
 		System.out.println("Done with : " + dataList.size() + " records");
 	}
 

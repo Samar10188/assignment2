@@ -1,5 +1,7 @@
 package com.adep.service.impl;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,16 +14,21 @@ import com.adep.dto.OrderDto;
 import com.adep.entity.OrderEntity;
 import com.adep.repository.OrderRepository;
 import com.adep.service.OrderService;
+import com.adep.shared.model.AllDataSalesDiscountCategory;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
+import com.adep.shared.model.AllYearSalesProfitDiscountQuantity;
 import com.adep.shared.model.DataCategory;
 import com.adep.shared.model.DataCategoryProfitSalesDiscount;
 import com.adep.shared.model.DataSalesDiscountProfit;
 import com.adep.shared.model.DataValueNameColor;
 import com.adep.shared.model.FurnitureDataCategory;
 import com.adep.shared.model.OfficeSupplyDataCategory;
+import com.adep.shared.model.SalesProfitDiscountQuantity;
 import com.adep.shared.model.SalesProfitDiscountValue;
 import com.adep.shared.model.SeriesData;
 import com.adep.shared.model.TechnologyDataCategory;
+import com.adep.shared.model.YearSalesProfitDiscountQuantity;
+import com.adep.shared.model.MonthSalesProfitDiscountQuantity;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -108,11 +115,12 @@ public class OrderServiceImpl implements OrderService {
 		}
 
 		DataCategoryProfitSalesDiscount dataCategory = allCountryData(list);
-		
-		DataCategory dataCategories=dataCategory.getDataCategory();
+
+		DataCategory dataCategories = dataCategory.getDataCategory();
 
 //		List<DataSalesDiscountProfit> dataSalesDiscountProfits = getAllCategoryData(dataCategory.getDataCategory());
-		List<DataSalesDiscountProfit> dataSalesDiscountProfits = getAllCategoryData(dataCategories).getAllDataSalesDiscountProfit();
+		List<DataSalesDiscountProfit> dataSalesDiscountProfits = getAllCategoryData(dataCategories)
+				.getAllDataSalesDiscountProfit();
 
 		List<DataValueNameColor> salesData = getSalesDataValueNameColor(dataSalesDiscountProfits);
 		List<DataValueNameColor> profitData = getProfitDataValueNameColor(dataSalesDiscountProfits);
@@ -135,7 +143,8 @@ public class OrderServiceImpl implements OrderService {
 //		TechnologyDataCategory technologyData = dataCategory.getTechnologyDataCategory();
 
 //		List<DataSalesDiscountProfit> technologydataSalesDiscountProfits = getAllTechnologyCategoryData(technologyData);
-		List<DataSalesDiscountProfit> technologydataSalesDiscountProfits = getAllCategoryData(dataCategory.getDataCategory()).getTechnologyDataSalesDiscountProfit();
+		List<DataSalesDiscountProfit> technologydataSalesDiscountProfits = getAllCategoryData(
+				dataCategory.getDataCategory()).getTechnologyDataSalesDiscountProfit();
 
 		List<DataValueNameColor> technologySalesData = getSalesDataValueNameColor(technologydataSalesDiscountProfits);
 		List<DataValueNameColor> technologProfitData = getProfitDataValueNameColor(technologydataSalesDiscountProfits);
@@ -158,8 +167,9 @@ public class OrderServiceImpl implements OrderService {
 //		FurnitureDataCategory furnitureDataCategory = dataCategory.getFurnitureDataCategory();
 
 //		List<DataSalesDiscountProfit> furnitureDataSalesDiscountProfits = getAllFurnitureCategoryData(furnitureDataCategory);
-		
-		List<DataSalesDiscountProfit> furnitureDataSalesDiscountProfits = getAllCategoryData(dataCategory.getDataCategory()).getFurnitureDataSalesDiscountProfit();
+
+		List<DataSalesDiscountProfit> furnitureDataSalesDiscountProfits = getAllCategoryData(
+				dataCategory.getDataCategory()).getFurnitureDataSalesDiscountProfit();
 		List<DataValueNameColor> furnitureSalesData = getSalesDataValueNameColor(furnitureDataSalesDiscountProfits);
 		List<DataValueNameColor> furnitureProfitData = getProfitDataValueNameColor(furnitureDataSalesDiscountProfits);
 		List<DataValueNameColor> furnitureDiscountData = getDiscountDataValueNameColor(
@@ -181,8 +191,9 @@ public class OrderServiceImpl implements OrderService {
 //		OfficeSupplyDataCategory officeSupplyDataCategory = dataCategory.getOfficeSupplyDataCategory();
 
 //		List<DataSalesDiscountProfit> officeSupplyDataSalesDiscountProfits = getAllOfficeSupplyCategoryData(officeSupplyDataCategory);
-		
-		List<DataSalesDiscountProfit> officeSupplyDataSalesDiscountProfits = getAllCategoryData(dataCategory.getDataCategory()).getOfficeSupplyDataSalesDiscountProfit();
+
+		List<DataSalesDiscountProfit> officeSupplyDataSalesDiscountProfits = getAllCategoryData(
+				dataCategory.getDataCategory()).getOfficeSupplyDataSalesDiscountProfit();
 
 		List<DataValueNameColor> officeSupplySalesData = getSalesDataValueNameColor(
 				officeSupplyDataSalesDiscountProfits);
@@ -211,6 +222,75 @@ public class OrderServiceImpl implements OrderService {
 		allSalesDiscountProfitData.setOfficeSupplySalesDiscountProfitValue(officeSupplySalesDiscountProfitValue);
 
 		return allSalesDiscountProfitData;
+	}
+
+	@Override
+	public AllYearSalesProfitDiscountQuantity getByYear(String category, String subCategory, String region,
+			String segment) {
+		String year2011 = "2011";
+		String year2012 = "2012";
+		String year2013 = "2013";
+		String year2014 = "2014";
+
+		List<OrderEntity> year1 = orderRepository.findByYear(year2011, category, subCategory, region, segment);
+		List<OrderEntity> year2 = orderRepository.findByYear(year2012, category, subCategory, region, segment);
+		List<OrderEntity> year3 = orderRepository.findByYear(year2013, category, subCategory, region, segment);
+		List<OrderEntity> year4 = orderRepository.findByYear(year2014, category, subCategory, region, segment);
+//		MonthSalesProfitDiscountQuantity monthsYear2011SalesProfitDiscountQuantity = getMonthSalesProfitDiscountQuantity(year1);
+
+		YearSalesProfitDiscountQuantity year2011SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year1));
+
+		YearSalesProfitDiscountQuantity year2012SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year2));
+		YearSalesProfitDiscountQuantity year2013SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year3));
+		YearSalesProfitDiscountQuantity year2014SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year4));
+
+		List<YearSalesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity = new ArrayList<YearSalesProfitDiscountQuantity>();
+
+		yearsSalesProfitDiscountQuantity.add(year2011SalesProfitDiscountQuantity);
+		yearsSalesProfitDiscountQuantity.add(year2012SalesProfitDiscountQuantity);
+		yearsSalesProfitDiscountQuantity.add(year2013SalesProfitDiscountQuantity);
+		yearsSalesProfitDiscountQuantity.add(year2014SalesProfitDiscountQuantity);
+
+		SalesProfitDiscountQuantity salesProfitDiscountQuantity = totalDataSalesProfitDiscountQuantity(
+				yearsSalesProfitDiscountQuantity);
+
+		AllYearSalesProfitDiscountQuantity allYearSalesProfitDiscountQuantity = new AllYearSalesProfitDiscountQuantity();
+		allYearSalesProfitDiscountQuantity.setYearsSalesProfitDiscountQuantity(yearsSalesProfitDiscountQuantity);
+		allYearSalesProfitDiscountQuantity.setTotalSalesProfitDiscountQuantity(salesProfitDiscountQuantity);
+
+		return allYearSalesProfitDiscountQuantity;
+	}
+
+	private SalesProfitDiscountQuantity totalDataSalesProfitDiscountQuantity(
+			List<YearSalesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity) {
+		Double zeroValue = (double) 0;
+
+		Double profit = zeroValue;
+		Double sales = zeroValue;
+		Double discount = zeroValue;
+		Double quantity = zeroValue;
+
+		for (int i = 0; i < yearsSalesProfitDiscountQuantity.size(); i++) {
+			YearSalesProfitDiscountQuantity dataSubSalesDiscountProfit = yearsSalesProfitDiscountQuantity.get(i);
+			profit = profit + dataSubSalesDiscountProfit.getTotalData().getProfit();
+			sales = sales + dataSubSalesDiscountProfit.getTotalData().getSales();
+			discount = discount + dataSubSalesDiscountProfit.getTotalData().getDiscount();
+			quantity = quantity + dataSubSalesDiscountProfit.getTotalData().getQuantity();
+		}
+
+		SalesProfitDiscountQuantity dataSalesDiscountProfit = new SalesProfitDiscountQuantity();
+
+		dataSalesDiscountProfit.setDiscount(discount);
+		dataSalesDiscountProfit.setProfit(profit);
+		dataSalesDiscountProfit.setSales(sales);
+		dataSalesDiscountProfit.setQuantity(quantity);
+
+		return dataSalesDiscountProfit;
+
 	}
 
 	private List<DataSalesDiscountProfit> getAllOfficeSupplyCategoryData(
@@ -1123,10 +1203,11 @@ public class OrderServiceImpl implements OrderService {
 
 	private DataSalesDiscountProfit dataSalesProfitDiscount(List<DataSalesDiscountProfit> dataSubCategory) {
 
-		Double profit = (double) 0;
-		Double sales = (double) 0;
-		Double discount = (double) 0;
-		Double avgDiscount = (double) 0;
+		Double zeroValue = (double) 0;
+		Double profit = zeroValue;
+		Double sales = zeroValue;
+		Double discount = zeroValue;
+		Double avgDiscount = zeroValue;
 
 		int totalData = dataSubCategory.size();
 		String subCategory = "";
@@ -1145,7 +1226,6 @@ public class OrderServiceImpl implements OrderService {
 			avgDiscount = discount / dataSubCategory.size();
 			subCategory = dataSubCategory.get(0).getSubCategory();
 			category = dataSubCategory.get(0).getCategory();
-
 		}
 		DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
 
@@ -1156,6 +1236,242 @@ public class OrderServiceImpl implements OrderService {
 		dataSalesDiscountProfit.setCategory(category);
 
 		return dataSalesDiscountProfit;
+	}
+
+	private SalesProfitDiscountQuantity monthSalesProfitDiscountQuantity(List<SalesProfitDiscountQuantity> dataMonth) {
+
+		Double zeroValue = (double) 0;
+
+		Double profit = zeroValue;
+		Double sales = zeroValue;
+		Double discount = zeroValue;
+		Double quantity = zeroValue;
+
+		for (int i = 0; i < dataMonth.size(); i++) {
+
+			SalesProfitDiscountQuantity dataSubSalesDiscountProfit = dataMonth.get(i);
+
+			profit = profit + dataSubSalesDiscountProfit.getProfit();
+			sales = sales + dataSubSalesDiscountProfit.getSales();
+			discount = discount + dataSubSalesDiscountProfit.getDiscount();
+			quantity = quantity + dataSubSalesDiscountProfit.getQuantity();
+		}
+
+		SalesProfitDiscountQuantity dataSalesDiscountProfit = new SalesProfitDiscountQuantity();
+
+		dataSalesDiscountProfit.setDiscount(discount);
+		dataSalesDiscountProfit.setProfit(profit);
+		dataSalesDiscountProfit.setSales(sales);
+		dataSalesDiscountProfit.setQuantity(quantity);
+
+		return dataSalesDiscountProfit;
+	}
+
+	private YearSalesProfitDiscountQuantity yearSalesProfitDiscountQuantity(
+			MonthSalesProfitDiscountQuantity monthsYearSalesProfitDiscountQuantity) {
+
+		List<SalesProfitDiscountQuantity> dataYear = new ArrayList<SalesProfitDiscountQuantity>();
+
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataJan()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataFeb()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataMar()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataApr()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataMay()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataJun()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataJul()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataAug()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataSep()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataOct()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataNov()));
+		dataYear.add(monthSalesProfitDiscountQuantity(monthsYearSalesProfitDiscountQuantity.getDataDec()));
+
+		YearSalesProfitDiscountQuantity yearSalesProfitDiscountQuantity = new YearSalesProfitDiscountQuantity();
+		yearSalesProfitDiscountQuantity.setDataYear(dataYear);
+
+		SalesProfitDiscountQuantity totalYearData = new SalesProfitDiscountQuantity();
+
+		Double zeroValue = (double) 0;
+
+		Double profit = zeroValue;
+		Double sales = zeroValue;
+		Double discount = zeroValue;
+		Double quantity = zeroValue;
+		for (int i = 0; i < dataYear.size(); i++) {
+			profit = profit + dataYear.get(i).getProfit();
+			sales = sales + dataYear.get(i).getSales();
+			discount = discount + dataYear.get(i).getDiscount();
+			quantity = quantity + dataYear.get(i).getQuantity();
+		}
+		totalYearData.setDiscount(discount);
+		totalYearData.setProfit(profit);
+		totalYearData.setQuantity(quantity);
+		totalYearData.setSales(sales);
+		yearSalesProfitDiscountQuantity.setTotalData(totalYearData);
+
+		return yearSalesProfitDiscountQuantity;
+	}
+
+	private MonthSalesProfitDiscountQuantity getMonthSalesProfitDiscountQuantity(List<OrderEntity> orders) {
+
+		List<SalesProfitDiscountQuantity> dataJan = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataFeb = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataMar = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataApr = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataMay = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataJun = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataJul = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataAug = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataSep = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataOct = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataNov = new ArrayList<>();
+		List<SalesProfitDiscountQuantity> dataDec = new ArrayList<>();
+
+		for (int i = 0; i < orders.size(); i++) {
+			OrderEntity orderEntity = orders.get(i);
+			LocalDate localDate = orderEntity.getOrderDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			if (1 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataJan.add(salesProfitDiscountQuantity);
+			} else if (2 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataFeb.add(salesProfitDiscountQuantity);
+			} else if (3 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataMar.add(salesProfitDiscountQuantity);
+			} else if (4 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataApr.add(salesProfitDiscountQuantity);
+			} else if (5 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataMay.add(salesProfitDiscountQuantity);
+			} else if (6 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataJun.add(salesProfitDiscountQuantity);
+			} else if (7 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataJul.add(salesProfitDiscountQuantity);
+			} else if (8 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataAug.add(salesProfitDiscountQuantity);
+			} else if (9 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataSep.add(salesProfitDiscountQuantity);
+			} else if (10 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataOct.add(salesProfitDiscountQuantity);
+			} else if (11 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataNov.add(salesProfitDiscountQuantity);
+			} else if (12 == localDate.getMonthValue()) {
+				SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+				BeanUtils.copyProperties(orderEntity, salesProfitDiscountQuantity);
+				dataDec.add(salesProfitDiscountQuantity);
+			}
+		}
+
+		if (dataJan.isEmpty()) {
+
+		}
+
+		MonthSalesProfitDiscountQuantity monthSalesProfitDiscountQuantity = new MonthSalesProfitDiscountQuantity();
+
+		SalesProfitDiscountQuantity salesProfitDiscountQuantity = new SalesProfitDiscountQuantity();
+		Double zeroValue = (double) 0;
+
+		Double profit = zeroValue;
+		Double sales = zeroValue;
+		Double discount = zeroValue;
+		Double quantity = zeroValue;
+		salesProfitDiscountQuantity.setDiscount(discount);
+		salesProfitDiscountQuantity.setProfit(profit);
+		salesProfitDiscountQuantity.setSales(sales);
+		salesProfitDiscountQuantity.setQuantity(quantity);
+		if (dataJan.isEmpty()) {
+			dataJan.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataJan(dataJan);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataJan(dataJan);
+		}
+		if (dataFeb.isEmpty()) {
+			dataFeb.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataFeb(dataFeb);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataFeb(dataFeb);
+		}
+		if (dataMar.isEmpty()) {
+			dataMar.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataMar(dataMar);
+		} else {
+
+			monthSalesProfitDiscountQuantity.setDataMar(dataMar);
+		}
+		if (dataApr.isEmpty()) {
+			dataApr.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataApr(dataApr);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataApr(dataApr);
+		}
+		if (dataMay.isEmpty()) {
+			dataMay.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataMay(dataMay);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataMay(dataMay);
+		}
+		if (dataJun.isEmpty()) {
+			dataJun.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataJun(dataJun);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataJun(dataJun);
+		}
+		if (dataJul.isEmpty()) {
+			dataJul.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataJul(dataJul);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataJul(dataJul);
+		}
+		if (dataAug.isEmpty()) {
+			dataAug.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataAug(dataAug);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataAug(dataAug);
+		}
+		if (dataSep.isEmpty()) {
+			dataSep.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataSep(dataSep);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataSep(dataSep);
+		}
+		if (dataOct.isEmpty()) {
+			dataOct.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataOct(dataOct);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataOct(dataOct);
+		}
+		if (dataNov.isEmpty()) {
+			dataNov.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataNov(dataNov);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataNov(dataNov);
+		}
+		if (dataDec.isEmpty()) {
+			dataDec.add(salesProfitDiscountQuantity);
+			monthSalesProfitDiscountQuantity.setDataDec(dataDec);
+		} else {
+			monthSalesProfitDiscountQuantity.setDataDec(dataDec);
+		}
+
+		return monthSalesProfitDiscountQuantity;
 	}
 
 }

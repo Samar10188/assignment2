@@ -1,9 +1,7 @@
-package com.adep.service.impl;
+package com.adep.shared.model;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.adep.shared.model.DataSalesDiscountProfit;
 
 public class AllDataSalesDiscountCategory implements Serializable {
 

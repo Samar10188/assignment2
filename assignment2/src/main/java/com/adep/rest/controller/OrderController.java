@@ -15,6 +15,7 @@ import com.adep.rest.response.SalesProfitDiscountValueResponse;
 import com.adep.rest.response.SeriesDataResponse;
 import com.adep.service.OrderService;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
+import com.adep.shared.model.AllYearSalesProfitDiscountQuantity;
 import com.adep.shared.model.SeriesData;
 
 @RestController
@@ -51,11 +52,37 @@ public class OrderController {
 	public SalesProfitDiscountValueResponse getSalesProfitDiscountValueByCountry(
 			@RequestParam(value = "country", defaultValue = "world", required = false) String country) {
 
-		AllSalesDiscountProfitValue salesProfitDiscountValue = orderService.getSalesProfitDiscountValueByCountry(country);
+		AllSalesDiscountProfitValue salesProfitDiscountValue = orderService
+				.getSalesProfitDiscountValueByCountry(country);
 		SalesProfitDiscountValueResponse salesProfitDiscountValueResponse = new SalesProfitDiscountValueResponse();
 		salesProfitDiscountValueResponse.setSalesProfitDiscountValue(salesProfitDiscountValue);
 
 		return salesProfitDiscountValueResponse;
+	}
+
+	@GetMapping("/year/salesProfitDiscountValue")
+	public AllYearSalesProfitDiscountQuantity getYearSalesProfitDiscountValueByCountry(
+			@RequestParam(value = "category", defaultValue = "all", required = false) String category,
+			@RequestParam(value = "subCategory", defaultValue = "all", required = false) String subCategory,
+			@RequestParam(value = "region", defaultValue = "all", required = false) String region,
+			@RequestParam(value = "segment", defaultValue = "all", required = false) String segment) {
+		if (category.contains("all")) {
+			category = ".*";
+		}
+		if (subCategory.contains("all")) {
+			subCategory = ".*";
+		}
+		if (region.contains("all")) {
+			region = ".*";
+		}
+		if (segment.contains("all")) {
+			segment = ".*";
+		}
+
+		AllYearSalesProfitDiscountQuantity allYearSalesProfitDiscountQuantity = orderService.getByYear(category,
+				subCategory, region, segment);
+
+		return allYearSalesProfitDiscountQuantity;
 	}
 
 }
