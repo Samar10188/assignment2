@@ -16,6 +16,7 @@ import com.adep.rest.response.SeriesDataResponse;
 import com.adep.service.OrderService;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
 import com.adep.shared.model.AllYearSalesProfitDiscountQuantity;
+import com.adep.shared.model.RegionSalesDiscountProfit;
 import com.adep.shared.model.SeriesData;
 
 @RestController
@@ -52,6 +53,10 @@ public class OrderController {
 	public SalesProfitDiscountValueResponse getSalesProfitDiscountValueByCountry(
 			@RequestParam(value = "country", defaultValue = "world", required = false) String country) {
 
+		if (country.contains("world")) {
+			country = ".*";
+		}
+
 		AllSalesDiscountProfitValue salesProfitDiscountValue = orderService
 				.getSalesProfitDiscountValueByCountry(country);
 		SalesProfitDiscountValueResponse salesProfitDiscountValueResponse = new SalesProfitDiscountValueResponse();
@@ -83,6 +88,16 @@ public class OrderController {
 				subCategory, region, segment);
 
 		return allYearSalesProfitDiscountQuantity;
+	}
+
+	@GetMapping("/getProfitByRegion")
+	public RegionSalesDiscountProfit getDataSalesDiscountProfitByRegion(
+			@RequestParam(value = "top", defaultValue = "13", required = false) String top) {
+
+		RegionSalesDiscountProfit regionSalesDiscountProfit = orderService
+				.getDataSubCategorySalesDiscountProfit(Integer.parseInt(top));
+
+		return regionSalesDiscountProfit;
 	}
 
 }

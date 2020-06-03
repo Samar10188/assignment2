@@ -3,8 +3,12 @@ package com.adep.service.impl;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,9 @@ import com.adep.shared.model.DataSalesDiscountProfit;
 import com.adep.shared.model.DataValueNameColor;
 import com.adep.shared.model.FurnitureDataCategory;
 import com.adep.shared.model.OfficeSupplyDataCategory;
+import com.adep.shared.model.RegionSalesDiscountProfit;
+import com.adep.shared.model.SalesDiscountProfit;
+import com.adep.shared.model.SalesDiscountProfitSubCategory;
 import com.adep.shared.model.SalesProfitDiscountQuantity;
 import com.adep.shared.model.SalesProfitDiscountValue;
 import com.adep.shared.model.SeriesData;
@@ -48,7 +55,199 @@ public class OrderServiceImpl implements OrderService {
 
 		return orderDto;
 	}
+	
+	@Transactional
+	@Override
+	public RegionSalesDiscountProfit getDataSubCategorySalesDiscountProfit(int top) {
 
+		List<String> regions = new ArrayList<>();
+		regions.add("East");
+		regions.add("Oceania");
+		regions.add("Central");
+		regions.add("Africa");
+		regions.add("West");
+		regions.add("South");
+		regions.add("Central Asia");
+		regions.add("EMEA");
+		regions.add("North Asia");
+		regions.add("North");
+		regions.add("Caribbean");
+		regions.add("Southeast Asia");
+		regions.add("Canada");
+
+		List<SalesDiscountProfitSubCategory> regionEast = getRegionTopData(regions.get(0), top);
+		List<SalesDiscountProfitSubCategory> regionOceania = getRegionTopData(regions.get(1), top);
+		List<SalesDiscountProfitSubCategory> regionCentral = getRegionTopData(regions.get(2), top);
+		List<SalesDiscountProfitSubCategory> regionAfrica = getRegionTopData(regions.get(3), top);
+		List<SalesDiscountProfitSubCategory> regionWest = getRegionTopData(regions.get(4), top);
+		List<SalesDiscountProfitSubCategory> regionSouth = getRegionTopData(regions.get(5), top);
+		List<SalesDiscountProfitSubCategory> regionCentralAsia = getRegionTopData(regions.get(6), top);
+		List<SalesDiscountProfitSubCategory> regionEMEA = getRegionTopData(regions.get(7), top);
+		List<SalesDiscountProfitSubCategory> regionNorthAsia = getRegionTopData(regions.get(8), top);
+		List<SalesDiscountProfitSubCategory> regionNorth = getRegionTopData(regions.get(9), top);
+		List<SalesDiscountProfitSubCategory> regionCaribbean = getRegionTopData(regions.get(10), top);
+		List<SalesDiscountProfitSubCategory> regionSoutheastAsia = getRegionTopData(regions.get(11), top);
+		List<SalesDiscountProfitSubCategory> regionCanada = getRegionTopData(regions.get(12), top);
+
+		RegionSalesDiscountProfit regionSalesDiscountProfit = new RegionSalesDiscountProfit();
+		regionSalesDiscountProfit.setRegionAfrica(regionAfrica);
+		regionSalesDiscountProfit.setRegionEast(regionEast);
+		regionSalesDiscountProfit.setRegionOceania(regionOceania);
+		regionSalesDiscountProfit.setRegionCentral(regionCentral);
+		regionSalesDiscountProfit.setRegionAfrica(regionAfrica);
+		regionSalesDiscountProfit.setRegionWest(regionWest);
+		regionSalesDiscountProfit.setRegionSouth(regionSouth);
+		regionSalesDiscountProfit.setRegionCentralAsia(regionCentralAsia);
+		regionSalesDiscountProfit.setRegionEMEA(regionEMEA);
+		regionSalesDiscountProfit.setRegionNorthAsia(regionNorthAsia);
+		regionSalesDiscountProfit.setRegionNorth(regionNorth);
+		regionSalesDiscountProfit.setRegionCaribbean(regionCaribbean);
+		regionSalesDiscountProfit.setRegionSoutheastAsia(regionSoutheastAsia);
+		regionSalesDiscountProfit.setRegionCanada(regionCanada);
+
+		return regionSalesDiscountProfit;
+	}
+
+	@Transactional
+	@Override
+	public AllYearSalesProfitDiscountQuantity getByYear(String category, String subCategory, String region,
+			String segment) {
+		String year2011 = "2011";
+		String year2012 = "2012";
+		String year2013 = "2013";
+		String year2014 = "2014";
+
+		List<OrderEntity> year1 = orderRepository.findByYear(year2011, category, subCategory, region, segment);
+		List<OrderEntity> year2 = orderRepository.findByYear(year2012, category, subCategory, region, segment);
+		List<OrderEntity> year3 = orderRepository.findByYear(year2013, category, subCategory, region, segment);
+		List<OrderEntity> year4 = orderRepository.findByYear(year2014, category, subCategory, region, segment);
+
+		YearSalesProfitDiscountQuantity year2011SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year1));
+
+		YearSalesProfitDiscountQuantity year2012SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year2));
+		YearSalesProfitDiscountQuantity year2013SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year3));
+		YearSalesProfitDiscountQuantity year2014SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
+				getMonthSalesProfitDiscountQuantity(year4));
+
+		List<YearSalesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity = new ArrayList<YearSalesProfitDiscountQuantity>();
+
+		yearsSalesProfitDiscountQuantity.add(year2011SalesProfitDiscountQuantity);
+		yearsSalesProfitDiscountQuantity.add(year2012SalesProfitDiscountQuantity);
+		yearsSalesProfitDiscountQuantity.add(year2013SalesProfitDiscountQuantity);
+		yearsSalesProfitDiscountQuantity.add(year2014SalesProfitDiscountQuantity);
+
+		SalesProfitDiscountQuantity salesProfitDiscountQuantity = totalDataSalesProfitDiscountQuantity(
+				yearsSalesProfitDiscountQuantity);
+
+		AllYearSalesProfitDiscountQuantity allYearSalesProfitDiscountQuantity = new AllYearSalesProfitDiscountQuantity();
+		allYearSalesProfitDiscountQuantity.setYearsSalesProfitDiscountQuantity(yearsSalesProfitDiscountQuantity);
+		allYearSalesProfitDiscountQuantity.setTotalSalesProfitDiscountQuantity(salesProfitDiscountQuantity);
+
+		return allYearSalesProfitDiscountQuantity;
+	}
+
+	@Override
+	public AllSalesDiscountProfitValue getSalesProfitDiscountValueByCountry(String country) {
+
+		List<OrderEntity> list = new ArrayList<>();
+		Iterable<OrderEntity> orderAll = orderRepository.findByCountry(country);
+		for (OrderEntity orderEntity : orderAll) {
+			list.add(orderEntity);
+		}
+
+		DataCategoryProfitSalesDiscount dataCategory = allCountryData(list);
+
+		DataCategory dataCategories = dataCategory.getDataCategory();
+
+		List<DataSalesDiscountProfit> dataSalesDiscountProfits = getAllCategoryData(dataCategories)
+				.getAllDataSalesDiscountProfit();
+
+		List<DataValueNameColor> salesData = getSalesDataValueNameColor(dataSalesDiscountProfits);
+		List<DataValueNameColor> profitData = getProfitDataValueNameColor(dataSalesDiscountProfits);
+		List<DataValueNameColor> discountData = getDiscountDataValueNameColor(dataSalesDiscountProfits);
+
+		SalesProfitDiscountValue allCountrySalesDiscountProfitData = new SalesProfitDiscountValue();
+		allCountrySalesDiscountProfitData.setSalesData(salesData);
+		allCountrySalesDiscountProfitData.setDiscountData(discountData);
+		allCountrySalesDiscountProfitData.setProfitData(profitData);
+		List<String> allSubCategories = new ArrayList<String>();
+		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
+			allSubCategories.add(dataSalesDiscountProfits.get(i).getSubCategory());
+		}
+		allCountrySalesDiscountProfitData.setSubCategory(allSubCategories);
+
+		List<DataSalesDiscountProfit> technologydataSalesDiscountProfits = getAllCategoryData(
+				dataCategory.getDataCategory()).getTechnologyDataSalesDiscountProfit();
+
+		List<DataValueNameColor> technologySalesData = getSalesDataValueNameColor(technologydataSalesDiscountProfits);
+		List<DataValueNameColor> technologProfitData = getProfitDataValueNameColor(technologydataSalesDiscountProfits);
+		List<DataValueNameColor> technologyDiscountData = getDiscountDataValueNameColor(
+				technologydataSalesDiscountProfits);
+
+		SalesProfitDiscountValue technolgySalesDiscountProfitValue = new SalesProfitDiscountValue();
+		technolgySalesDiscountProfitValue.setDiscountData(technologyDiscountData);
+		technolgySalesDiscountProfitValue.setProfitData(technologProfitData);
+		technolgySalesDiscountProfitValue.setSalesData(technologySalesData);
+		List<String> technologySubCategories = new ArrayList<String>();
+
+		for (int i = 0; i < technologydataSalesDiscountProfits.size(); i++) {
+			technologySubCategories.add(technologydataSalesDiscountProfits.get(i).getSubCategory());
+		}
+
+		technolgySalesDiscountProfitValue.setSubCategory(technologySubCategories);
+
+		List<DataSalesDiscountProfit> furnitureDataSalesDiscountProfits = getAllCategoryData(
+				dataCategory.getDataCategory()).getFurnitureDataSalesDiscountProfit();
+		List<DataValueNameColor> furnitureSalesData = getSalesDataValueNameColor(furnitureDataSalesDiscountProfits);
+		List<DataValueNameColor> furnitureProfitData = getProfitDataValueNameColor(furnitureDataSalesDiscountProfits);
+		List<DataValueNameColor> furnitureDiscountData = getDiscountDataValueNameColor(
+				furnitureDataSalesDiscountProfits);
+
+		SalesProfitDiscountValue furnitureSalesDiscountProfitValue = new SalesProfitDiscountValue();
+		furnitureSalesDiscountProfitValue.setSalesData(furnitureSalesData);
+		furnitureSalesDiscountProfitValue.setDiscountData(furnitureDiscountData);
+		furnitureSalesDiscountProfitValue.setProfitData(furnitureProfitData);
+
+		List<String> furnitureSubCategories = new ArrayList<String>();
+		for (int i = 0; i < furnitureDataSalesDiscountProfits.size(); i++) {
+			furnitureSubCategories.add(furnitureDataSalesDiscountProfits.get(i).getSubCategory());
+		}
+
+		furnitureSalesDiscountProfitValue.setSubCategory(furnitureSubCategories);
+
+		List<DataSalesDiscountProfit> officeSupplyDataSalesDiscountProfits = getAllCategoryData(
+				dataCategory.getDataCategory()).getOfficeSupplyDataSalesDiscountProfit();
+
+		List<DataValueNameColor> officeSupplySalesData = getSalesDataValueNameColor(
+				officeSupplyDataSalesDiscountProfits);
+		List<DataValueNameColor> officeSupplyProfitData = getProfitDataValueNameColor(
+				officeSupplyDataSalesDiscountProfits);
+		List<DataValueNameColor> officeSupplyDiscountData = getDiscountDataValueNameColor(
+				officeSupplyDataSalesDiscountProfits);
+
+		SalesProfitDiscountValue officeSupplySalesDiscountProfitValue = new SalesProfitDiscountValue();
+		officeSupplySalesDiscountProfitValue.setSalesData(officeSupplySalesData);
+		officeSupplySalesDiscountProfitValue.setDiscountData(officeSupplyDiscountData);
+		officeSupplySalesDiscountProfitValue.setProfitData(officeSupplyProfitData);
+
+		List<String> officeSupplySubCategories = new ArrayList<String>();
+		for (int i = 0; i < officeSupplyDataSalesDiscountProfits.size(); i++) {
+			officeSupplySubCategories.add(officeSupplyDataSalesDiscountProfits.get(i).getSubCategory());
+		}
+		officeSupplySalesDiscountProfitValue.setSubCategory(officeSupplySubCategories);
+
+		AllSalesDiscountProfitValue allSalesDiscountProfitData = new AllSalesDiscountProfitValue();
+		allSalesDiscountProfitData.setAllSalesDiscountProfitValue(allCountrySalesDiscountProfitData);
+		allSalesDiscountProfitData.setTechnolgySalesDiscountProfitValue(technolgySalesDiscountProfitValue);
+		allSalesDiscountProfitData.setFurnitureSalesDiscountProfitValue(furnitureSalesDiscountProfitValue);
+		allSalesDiscountProfitData.setOfficeSupplySalesDiscountProfitValue(officeSupplySalesDiscountProfitValue);
+
+		return allSalesDiscountProfitData;
+	}
+	
 	@Override
 	public List<SeriesData> getDataSalesDiscountProfit() {
 
@@ -82,17 +281,17 @@ public class OrderServiceImpl implements OrderService {
 		SeriesData seriesDataProfit = new SeriesData();
 		seriesDataProfit.setName("Profit");
 
-		seriesDataProfit.setData(getDataProfit(dataSalesDiscountProfit));
+		seriesDataProfit.setData(getDataSalesDiscountProfit(dataSalesDiscountProfit).getDataProfit());
 
 		SeriesData seriesDataAverageDiscount = new SeriesData();
 		seriesDataAverageDiscount.setName("Average Discount");
 
-		seriesDataAverageDiscount.setData(getDataDiscount(dataSalesDiscountProfit));
+		seriesDataAverageDiscount.setData(getDataSalesDiscountProfit(dataSalesDiscountProfit).getDataDiscount());
 
 		SeriesData seriesDataSales = new SeriesData();
 		seriesDataSales.setName("Sales");
 
-		seriesDataSales.setData(getDataSales(dataSalesDiscountProfit));
+		seriesDataSales.setData(getDataSalesDiscountProfit(dataSalesDiscountProfit).getDataSales());
 
 		seriesData.add(seriesDataProfit);
 		seriesData.add(seriesDataAverageDiscount);
@@ -100,171 +299,7 @@ public class OrderServiceImpl implements OrderService {
 
 		return seriesData;
 	}
-
-	@Override
-	public AllSalesDiscountProfitValue getSalesProfitDiscountValueByCountry(String country) {
-
-		if (country.contains("world")) {
-			country = ".*";
-		}
-
-		List<OrderEntity> list = new ArrayList<>();
-		Iterable<OrderEntity> orderAll = orderRepository.findByCountry(country);
-		for (OrderEntity orderEntity : orderAll) {
-			list.add(orderEntity);
-		}
-
-		DataCategoryProfitSalesDiscount dataCategory = allCountryData(list);
-
-		DataCategory dataCategories = dataCategory.getDataCategory();
-
-//		List<DataSalesDiscountProfit> dataSalesDiscountProfits = getAllCategoryData(dataCategory.getDataCategory());
-		List<DataSalesDiscountProfit> dataSalesDiscountProfits = getAllCategoryData(dataCategories)
-				.getAllDataSalesDiscountProfit();
-
-		List<DataValueNameColor> salesData = getSalesDataValueNameColor(dataSalesDiscountProfits);
-		List<DataValueNameColor> profitData = getProfitDataValueNameColor(dataSalesDiscountProfits);
-		List<DataValueNameColor> discountData = getDiscountDataValueNameColor(dataSalesDiscountProfits);
-
-		SalesProfitDiscountValue allCountrySalesDiscountProfitData = new SalesProfitDiscountValue();
-		allCountrySalesDiscountProfitData.setSalesData(salesData);
-		allCountrySalesDiscountProfitData.setDiscountData(discountData);
-		allCountrySalesDiscountProfitData.setProfitData(profitData);
-		List<String> allSubCategories = new ArrayList<String>();
-
-		System.out.println("All dataSalesDiscountProfits : " + dataSalesDiscountProfits.size());
-		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
-			allSubCategories.add(dataSalesDiscountProfits.get(i).getSubCategory());
-		}
-		System.out.println(allSubCategories);
-		allCountrySalesDiscountProfitData.setSubCategory(allSubCategories);
-
-//		TechnologyDataCategory technologyData = technologyDataCategory(list);
-//		TechnologyDataCategory technologyData = dataCategory.getTechnologyDataCategory();
-
-//		List<DataSalesDiscountProfit> technologydataSalesDiscountProfits = getAllTechnologyCategoryData(technologyData);
-		List<DataSalesDiscountProfit> technologydataSalesDiscountProfits = getAllCategoryData(
-				dataCategory.getDataCategory()).getTechnologyDataSalesDiscountProfit();
-
-		List<DataValueNameColor> technologySalesData = getSalesDataValueNameColor(technologydataSalesDiscountProfits);
-		List<DataValueNameColor> technologProfitData = getProfitDataValueNameColor(technologydataSalesDiscountProfits);
-		List<DataValueNameColor> technologyDiscountData = getDiscountDataValueNameColor(
-				technologydataSalesDiscountProfits);
-
-		SalesProfitDiscountValue technolgySalesDiscountProfitValue = new SalesProfitDiscountValue();
-		technolgySalesDiscountProfitValue.setDiscountData(technologyDiscountData);
-		technolgySalesDiscountProfitValue.setProfitData(technologProfitData);
-		technolgySalesDiscountProfitValue.setSalesData(technologySalesData);
-		List<String> technologySubCategories = new ArrayList<String>();
-		System.out.println("technologydataSalesDiscountProfits : " + technologydataSalesDiscountProfits.size());
-		for (int i = 0; i < technologydataSalesDiscountProfits.size(); i++) {
-			technologySubCategories.add(technologydataSalesDiscountProfits.get(i).getSubCategory());
-		}
-		System.out.println(technologySubCategories);
-		technolgySalesDiscountProfitValue.setSubCategory(technologySubCategories);
-
-//		FurnitureDataCategory furnitureDataCategory = furnitureDataCategory(list);
-//		FurnitureDataCategory furnitureDataCategory = dataCategory.getFurnitureDataCategory();
-
-//		List<DataSalesDiscountProfit> furnitureDataSalesDiscountProfits = getAllFurnitureCategoryData(furnitureDataCategory);
-
-		List<DataSalesDiscountProfit> furnitureDataSalesDiscountProfits = getAllCategoryData(
-				dataCategory.getDataCategory()).getFurnitureDataSalesDiscountProfit();
-		List<DataValueNameColor> furnitureSalesData = getSalesDataValueNameColor(furnitureDataSalesDiscountProfits);
-		List<DataValueNameColor> furnitureProfitData = getProfitDataValueNameColor(furnitureDataSalesDiscountProfits);
-		List<DataValueNameColor> furnitureDiscountData = getDiscountDataValueNameColor(
-				furnitureDataSalesDiscountProfits);
-
-		SalesProfitDiscountValue furnitureSalesDiscountProfitValue = new SalesProfitDiscountValue();
-		furnitureSalesDiscountProfitValue.setSalesData(furnitureSalesData);
-		furnitureSalesDiscountProfitValue.setDiscountData(furnitureDiscountData);
-		furnitureSalesDiscountProfitValue.setProfitData(furnitureProfitData);
-		System.out.println("furnitureDataSalesDiscountProfits : " + furnitureDataSalesDiscountProfits.size());
-		List<String> furnitureSubCategories = new ArrayList<String>();
-		for (int i = 0; i < furnitureDataSalesDiscountProfits.size(); i++) {
-			furnitureSubCategories.add(furnitureDataSalesDiscountProfits.get(i).getSubCategory());
-		}
-		System.out.println(furnitureSubCategories);
-		furnitureSalesDiscountProfitValue.setSubCategory(furnitureSubCategories);
-
-//		OfficeSupplyDataCategory officeSupplyDataCategory = officeSupplyDataCategory(list);
-//		OfficeSupplyDataCategory officeSupplyDataCategory = dataCategory.getOfficeSupplyDataCategory();
-
-//		List<DataSalesDiscountProfit> officeSupplyDataSalesDiscountProfits = getAllOfficeSupplyCategoryData(officeSupplyDataCategory);
-
-		List<DataSalesDiscountProfit> officeSupplyDataSalesDiscountProfits = getAllCategoryData(
-				dataCategory.getDataCategory()).getOfficeSupplyDataSalesDiscountProfit();
-
-		List<DataValueNameColor> officeSupplySalesData = getSalesDataValueNameColor(
-				officeSupplyDataSalesDiscountProfits);
-		List<DataValueNameColor> officeSupplyProfitData = getProfitDataValueNameColor(
-				officeSupplyDataSalesDiscountProfits);
-		List<DataValueNameColor> officeSupplyDiscountData = getDiscountDataValueNameColor(
-				officeSupplyDataSalesDiscountProfits);
-
-		SalesProfitDiscountValue officeSupplySalesDiscountProfitValue = new SalesProfitDiscountValue();
-		officeSupplySalesDiscountProfitValue.setSalesData(officeSupplySalesData);
-		officeSupplySalesDiscountProfitValue.setDiscountData(officeSupplyDiscountData);
-		officeSupplySalesDiscountProfitValue.setProfitData(officeSupplyProfitData);
-
-		List<String> officeSupplySubCategories = new ArrayList<String>();
-		System.out.println("officeSupplySubCategories : " + officeSupplyDataSalesDiscountProfits.size());
-		for (int i = 0; i < officeSupplyDataSalesDiscountProfits.size(); i++) {
-			officeSupplySubCategories.add(officeSupplyDataSalesDiscountProfits.get(i).getSubCategory());
-		}
-		System.out.println(officeSupplySubCategories);
-		officeSupplySalesDiscountProfitValue.setSubCategory(officeSupplySubCategories);
-
-		AllSalesDiscountProfitValue allSalesDiscountProfitData = new AllSalesDiscountProfitValue();
-		allSalesDiscountProfitData.setAllSalesDiscountProfitValue(allCountrySalesDiscountProfitData);
-		allSalesDiscountProfitData.setTechnolgySalesDiscountProfitValue(technolgySalesDiscountProfitValue);
-		allSalesDiscountProfitData.setFurnitureSalesDiscountProfitValue(furnitureSalesDiscountProfitValue);
-		allSalesDiscountProfitData.setOfficeSupplySalesDiscountProfitValue(officeSupplySalesDiscountProfitValue);
-
-		return allSalesDiscountProfitData;
-	}
-
-	@Override
-	public AllYearSalesProfitDiscountQuantity getByYear(String category, String subCategory, String region,
-			String segment) {
-		String year2011 = "2011";
-		String year2012 = "2012";
-		String year2013 = "2013";
-		String year2014 = "2014";
-
-		List<OrderEntity> year1 = orderRepository.findByYear(year2011, category, subCategory, region, segment);
-		List<OrderEntity> year2 = orderRepository.findByYear(year2012, category, subCategory, region, segment);
-		List<OrderEntity> year3 = orderRepository.findByYear(year2013, category, subCategory, region, segment);
-		List<OrderEntity> year4 = orderRepository.findByYear(year2014, category, subCategory, region, segment);
-//		MonthSalesProfitDiscountQuantity monthsYear2011SalesProfitDiscountQuantity = getMonthSalesProfitDiscountQuantity(year1);
-
-		YearSalesProfitDiscountQuantity year2011SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
-				getMonthSalesProfitDiscountQuantity(year1));
-
-		YearSalesProfitDiscountQuantity year2012SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
-				getMonthSalesProfitDiscountQuantity(year2));
-		YearSalesProfitDiscountQuantity year2013SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
-				getMonthSalesProfitDiscountQuantity(year3));
-		YearSalesProfitDiscountQuantity year2014SalesProfitDiscountQuantity = yearSalesProfitDiscountQuantity(
-				getMonthSalesProfitDiscountQuantity(year4));
-
-		List<YearSalesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity = new ArrayList<YearSalesProfitDiscountQuantity>();
-
-		yearsSalesProfitDiscountQuantity.add(year2011SalesProfitDiscountQuantity);
-		yearsSalesProfitDiscountQuantity.add(year2012SalesProfitDiscountQuantity);
-		yearsSalesProfitDiscountQuantity.add(year2013SalesProfitDiscountQuantity);
-		yearsSalesProfitDiscountQuantity.add(year2014SalesProfitDiscountQuantity);
-
-		SalesProfitDiscountQuantity salesProfitDiscountQuantity = totalDataSalesProfitDiscountQuantity(
-				yearsSalesProfitDiscountQuantity);
-
-		AllYearSalesProfitDiscountQuantity allYearSalesProfitDiscountQuantity = new AllYearSalesProfitDiscountQuantity();
-		allYearSalesProfitDiscountQuantity.setYearsSalesProfitDiscountQuantity(yearsSalesProfitDiscountQuantity);
-		allYearSalesProfitDiscountQuantity.setTotalSalesProfitDiscountQuantity(salesProfitDiscountQuantity);
-
-		return allYearSalesProfitDiscountQuantity;
-	}
-
+	
 	private SalesProfitDiscountQuantity totalDataSalesProfitDiscountQuantity(
 			List<YearSalesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity) {
 		Double zeroValue = (double) 0;
@@ -293,251 +328,123 @@ public class OrderServiceImpl implements OrderService {
 
 	}
 
-	private List<DataSalesDiscountProfit> getAllOfficeSupplyCategoryData(
-			OfficeSupplyDataCategory officeSupplyDataCategory) {
+	private List<SalesDiscountProfitSubCategory> getRegionTopData(String region, int top) {
 
-		List<DataSalesDiscountProfit> dataSalesDiscountProfit = new ArrayList<>();
-		Double vaueZero = (double) 0;
-		if (officeSupplyDataCategory.getDataAppliances().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Appliances");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataAppliances()));
-		}
-		if (officeSupplyDataCategory.getDataArt().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Arts");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataArt()));
-		}
-		if (officeSupplyDataCategory.getDataBinders().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Binders");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataBinders()));
-		}
-		if (officeSupplyDataCategory.getDataArt().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Envelopes");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataEnvelopes()));
-		}
-		if (officeSupplyDataCategory.getDataFasteners().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Fasteners");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataFasteners()));
-		}
-		if (officeSupplyDataCategory.getDataLabels().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Labels");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataLabels()));
-		}
-		if (officeSupplyDataCategory.getDataPaper().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Paper");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataPaper()));
+		List<OrderEntity> listEast = new ArrayList<>();
+		Iterable<OrderEntity> orderAll = orderRepository.findByRegion(region);
+		for (OrderEntity orderEntity : orderAll) {
+			listEast.add(orderEntity);
 		}
 
-		if (officeSupplyDataCategory.getDataStorage().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Storage");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataStorage()));
+		DataCategoryProfitSalesDiscount dataCategoryRegionEast = allCountryData1(listEast);
+		List<SalesDiscountProfitSubCategory> profitRegionEast = getRegionSubCategoryData(dataCategoryRegionEast);
+
+		Collections.sort(profitRegionEast, Comparator.comparing(SalesDiscountProfitSubCategory::getProfit).reversed());
+
+		List<SalesDiscountProfitSubCategory> topProfitRegion = new ArrayList<>();
+		for (int i = 0; i < top; i++) {
+			topProfitRegion.add(profitRegionEast.get(i));
 		}
-		if (officeSupplyDataCategory.getDataSupplies().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Supplies");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Office Supplies");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(officeSupplyDataCategory.getDataSupplies()));
-		}
-		return dataSalesDiscountProfit;
+
+		return topProfitRegion;
 	}
 
-	private List<DataSalesDiscountProfit> getAllFurnitureCategoryData(FurnitureDataCategory furnitureData) {
+	private List<SalesDiscountProfitSubCategory> getRegionSubCategoryData(
+			DataCategoryProfitSalesDiscount dataCategory) {
 
 		List<DataSalesDiscountProfit> dataSalesDiscountProfit = new ArrayList<>();
-		Double vaueZero = (double) 0;
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataAccessories()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataAppliances()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataArt()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataBinders()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataChairs()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataCopiers()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataEnvelopes()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataFasteners()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataFurnishings()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataLabels()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataMachines()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataPaper()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataPhones()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataStorage()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataSupplies()));
+		dataSalesDiscountProfit.add(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataTables()));
 
-		if (furnitureData.getDataBookcases().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Bookcases");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Furniture");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(furnitureData.getDataBookcases()));
-		}
-		if (furnitureData.getDataChairs().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Chairs");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Furniture");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(furnitureData.getDataChairs()));
-		}
-		if (furnitureData.getDataFurnishings().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Furnishings");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Furniture");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(furnitureData.getDataFurnishings()));
-		}
-		if (furnitureData.getDataTables().size() == 0) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Tables");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Furniture");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(furnitureData.getDataTables()));
-		}
+		SalesDiscountProfitSubCategory valueAccessory = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataAccessories()),
+				valueAccessory);
 
-		return dataSalesDiscountProfit;
-	}
+		SalesDiscountProfitSubCategory valueAppliance = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataAppliances()),
+				valueAppliance);
 
-	private List<DataSalesDiscountProfit> getAllTechnologyCategoryData(TechnologyDataCategory technologyData) {
-		List<DataSalesDiscountProfit> dataSalesDiscountProfit = new ArrayList<>();
-		Double vaueZero = (double) 0;
+		SalesDiscountProfitSubCategory valueArt = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataArt()), valueArt);
 
-		if (technologyData.getDataAccessories().isEmpty()) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Accessories");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Technology");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(technologyData.getDataAccessories()));
-		}
-		if (technologyData.getDataCopiers().isEmpty()) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Copiers");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Technology");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(technologyData.getDataCopiers()));
-		}
-		if (technologyData.getDataMachines().isEmpty()) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Machines");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Technology");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(technologyData.getDataMachines()));
-		}
-		if (technologyData.getDataPhones().isEmpty()) {
-			DataSalesDiscountProfit dataSalesDiscountProfits = new DataSalesDiscountProfit();
-			dataSalesDiscountProfits.setSubCategory("Phones");
-			dataSalesDiscountProfits.setDiscount(vaueZero);
-			dataSalesDiscountProfits.setProfit(vaueZero);
-			dataSalesDiscountProfits.setSales(vaueZero);
-			dataSalesDiscountProfits.setCategory("Technology");
-			List<DataSalesDiscountProfit> accList = new ArrayList<DataSalesDiscountProfit>();
-			accList.add(dataSalesDiscountProfits);
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(accList));
-		} else {
-			dataSalesDiscountProfit.add(dataSalesProfitDiscount(technologyData.getDataPhones()));
-		}
+		SalesDiscountProfitSubCategory valueBinder = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataBinders()), valueBinder);
 
-		return dataSalesDiscountProfit;
+		SalesDiscountProfitSubCategory valueChair = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataChairs()), valueChair);
+
+		SalesDiscountProfitSubCategory valueCopier = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataCopiers()), valueCopier);
+
+		SalesDiscountProfitSubCategory valueEnvelope = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataEnvelopes()),
+				valueEnvelope);
+
+		SalesDiscountProfitSubCategory valueFastener = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataFasteners()),
+				valueFastener);
+
+		SalesDiscountProfitSubCategory valueFurnishing = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataFurnishings()),
+				valueFurnishing);
+
+		SalesDiscountProfitSubCategory valueLabels = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataLabels()), valueLabels);
+
+		SalesDiscountProfitSubCategory valueMachines = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataMachines()),
+				valueMachines);
+
+		SalesDiscountProfitSubCategory valuePaper = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataPaper()), valuePaper);
+
+		SalesDiscountProfitSubCategory valuePhones = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataPhones()), valuePhones);
+
+		SalesDiscountProfitSubCategory valueStorage = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataStorage()),
+				valueStorage);
+
+		SalesDiscountProfitSubCategory valueSupply = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataSupplies()),
+				valueSupply);
+
+		SalesDiscountProfitSubCategory valueTable = new SalesDiscountProfitSubCategory();
+		BeanUtils.copyProperties(dataSalesProfitDiscount(dataCategory.getDataCategory().getDataTables()), valueTable);
+
+		List<SalesDiscountProfitSubCategory> salesDiscountProfitSubCategory = new ArrayList<SalesDiscountProfitSubCategory>();
+
+		salesDiscountProfitSubCategory.add(valueAccessory);
+		salesDiscountProfitSubCategory.add(valueAppliance);
+		salesDiscountProfitSubCategory.add(valueArt);
+		salesDiscountProfitSubCategory.add(valueBinder);
+		salesDiscountProfitSubCategory.add(valueChair);
+		salesDiscountProfitSubCategory.add(valueCopier);
+		salesDiscountProfitSubCategory.add(valueEnvelope);
+		salesDiscountProfitSubCategory.add(valueFastener);
+		salesDiscountProfitSubCategory.add(valueLabels);
+		salesDiscountProfitSubCategory.add(valueMachines);
+		salesDiscountProfitSubCategory.add(valuePaper);
+		salesDiscountProfitSubCategory.add(valuePhones);
+		salesDiscountProfitSubCategory.add(valueStorage);
+		salesDiscountProfitSubCategory.add(valueSupply);
+		salesDiscountProfitSubCategory.add(valueTable);
+
+		return salesDiscountProfitSubCategory;
 	}
 
 	private AllDataSalesDiscountCategory getAllCategoryData(DataCategory dataCategory) {
@@ -877,176 +784,23 @@ public class OrderServiceImpl implements OrderService {
 		return getDataValueNameColor;
 	}
 
-	private List<Double> getDataSales(List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
+	private SalesDiscountProfit getDataSalesDiscountProfit(List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
 
 		List<Double> dataSales = new ArrayList<>();
-		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
-			DataSalesDiscountProfit dataSalesDiscountProfit = dataSalesDiscountProfits.get(i);
-			dataSales.add(dataSalesDiscountProfit.getSales());
-		}
-		return dataSales;
-	}
-
-	private List<Double> getDataDiscount(List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
-
 		List<Double> dataDiscount = new ArrayList<>();
-		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
-			DataSalesDiscountProfit dataSalesDiscountProfit = dataSalesDiscountProfits.get(i);
-			dataDiscount.add(dataSalesDiscountProfit.getDiscount());
-		}
-		return dataDiscount;
-	}
-
-	private List<Double> getDataProfit(List<DataSalesDiscountProfit> dataSalesDiscountProfits) {
-
 		List<Double> dataProfit = new ArrayList<>();
 		for (int i = 0; i < dataSalesDiscountProfits.size(); i++) {
 			DataSalesDiscountProfit dataSalesDiscountProfit = dataSalesDiscountProfits.get(i);
+			dataSales.add(dataSalesDiscountProfit.getSales());
+			dataDiscount.add(dataSalesDiscountProfit.getDiscount());
 			dataProfit.add(dataSalesDiscountProfit.getProfit());
 		}
-		return dataProfit;
-	}
+		SalesDiscountProfit salesDiscountProfit = new SalesDiscountProfit();
+		salesDiscountProfit.setDataDiscount(dataDiscount);
+		salesDiscountProfit.setDataProfit(dataProfit);
+		salesDiscountProfit.setDataSales(dataSales);
 
-	private OfficeSupplyDataCategory officeSupplyDataCategory(List<OrderEntity> orders) {
-
-		List<DataSalesDiscountProfit> dataAppliances = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataArt = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataBinders = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataEnvelopes = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataFasteners = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataLabels = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataPaper = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataStorage = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataSupplies = new ArrayList<>();
-		for (int i = 0; i < orders.size(); i++) {
-			OrderEntity orderEntity = orders.get(i);
-			if (orderEntity.getCategory().contains("Office Supplies")) {
-				if (orderEntity.getSubCategory().contains("Appliances")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataAppliances.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Art")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataArt.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Binders")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataBinders.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Envelopes")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataEnvelopes.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Fasteners")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataFasteners.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Labels")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataLabels.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Paper")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataPaper.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Storage")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataStorage.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Supplies")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataSupplies.add(dataSalesDiscountProfit);
-				}
-			}
-		}
-
-		OfficeSupplyDataCategory officeSupplyDataCategory = new OfficeSupplyDataCategory();
-		officeSupplyDataCategory.setDataAppliances(dataAppliances);
-		officeSupplyDataCategory.setDataArt(dataArt);
-		officeSupplyDataCategory.setDataBinders(dataBinders);
-		officeSupplyDataCategory.setDataEnvelopes(dataEnvelopes);
-		officeSupplyDataCategory.setDataFasteners(dataFasteners);
-		officeSupplyDataCategory.setDataLabels(dataLabels);
-		officeSupplyDataCategory.setDataPaper(dataPaper);
-		officeSupplyDataCategory.setDataStorage(dataStorage);
-		officeSupplyDataCategory.setDataSupplies(dataSupplies);
-
-		return officeSupplyDataCategory;
-	}
-
-	private FurnitureDataCategory furnitureDataCategory(List<OrderEntity> orders) {
-		List<DataSalesDiscountProfit> dataBookcases = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataChairs = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataFurnishings = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataTables = new ArrayList<>();
-
-		for (int i = 0; i < orders.size(); i++) {
-			OrderEntity orderEntity = orders.get(i);
-
-			if (orderEntity.getCategory().contains("Furniture")) {
-				if (orderEntity.getSubCategory().contains("Bookcases")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataBookcases.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Chairs")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataChairs.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Furnishings")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataFurnishings.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Tables")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataTables.add(dataSalesDiscountProfit);
-				}
-			}
-		}
-		FurnitureDataCategory furnitureDataCategory = new FurnitureDataCategory();
-		furnitureDataCategory.setDataBookcases(dataBookcases);
-		furnitureDataCategory.setDataChairs(dataChairs);
-		furnitureDataCategory.setDataFurnishings(dataFurnishings);
-		furnitureDataCategory.setDataTables(dataTables);
-		return furnitureDataCategory;
-	}
-
-	private TechnologyDataCategory technologyDataCategory(List<OrderEntity> orders) {
-		List<DataSalesDiscountProfit> dataAccessories = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataCopiers = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataMachines = new ArrayList<>();
-		List<DataSalesDiscountProfit> dataPhones = new ArrayList<>();
-		for (int i = 0; i < orders.size(); i++) {
-			OrderEntity orderEntity = orders.get(i);
-
-			if (orderEntity.getCategory().contains("Technology")) {
-				if (orderEntity.getSubCategory().contains("Accessories")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataAccessories.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Copiers")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataCopiers.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Machines")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataMachines.add(dataSalesDiscountProfit);
-				} else if (orderEntity.getSubCategory().contains("Phones")) {
-					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
-					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
-					dataPhones.add(dataSalesDiscountProfit);
-				}
-			}
-		}
-		TechnologyDataCategory technologyDataCategory = new TechnologyDataCategory();
-		technologyDataCategory.setDataAccessories(dataAccessories);
-		technologyDataCategory.setDataCopiers(dataCopiers);
-		technologyDataCategory.setDataMachines(dataMachines);
-		technologyDataCategory.setDataPhones(dataPhones);
-
-		return technologyDataCategory;
+		return salesDiscountProfit;
 	}
 
 	private DataCategoryProfitSalesDiscount allCountryData(List<OrderEntity> orders) {
@@ -1168,6 +922,334 @@ public class OrderServiceImpl implements OrderService {
 		dataCategory.setDataStorage(dataStorage);
 		dataCategory.setDataSupplies(dataSupplies);
 		dataCategory.setDataTables(dataTables);
+
+		TechnologyDataCategory technologyDataCategory = new TechnologyDataCategory();
+		technologyDataCategory.setDataAccessories(dataAccessories);
+		technologyDataCategory.setDataCopiers(dataCopiers);
+		technologyDataCategory.setDataMachines(dataMachines);
+		technologyDataCategory.setDataPhones(dataPhones);
+
+		FurnitureDataCategory furnitureDataCategory = new FurnitureDataCategory();
+		furnitureDataCategory.setDataBookcases(dataBookcases);
+		furnitureDataCategory.setDataChairs(dataChairs);
+		furnitureDataCategory.setDataFurnishings(dataFurnishings);
+		furnitureDataCategory.setDataTables(dataTables);
+
+		OfficeSupplyDataCategory officeSupplyDataCategory = new OfficeSupplyDataCategory();
+		officeSupplyDataCategory.setDataAppliances(dataAppliances);
+		officeSupplyDataCategory.setDataArt(dataArt);
+		officeSupplyDataCategory.setDataBinders(dataBinders);
+		officeSupplyDataCategory.setDataEnvelopes(dataEnvelopes);
+		officeSupplyDataCategory.setDataFasteners(dataFasteners);
+		officeSupplyDataCategory.setDataLabels(dataLabels);
+		officeSupplyDataCategory.setDataPaper(dataPaper);
+		officeSupplyDataCategory.setDataStorage(dataStorage);
+		officeSupplyDataCategory.setDataSupplies(dataSupplies);
+
+		DataCategoryProfitSalesDiscount dataCategoryProfitSalesDiscount = new DataCategoryProfitSalesDiscount();
+		dataCategoryProfitSalesDiscount.setDataCategory(dataCategory);
+		dataCategoryProfitSalesDiscount.setFurnitureDataCategory(furnitureDataCategory);
+		dataCategoryProfitSalesDiscount.setOfficeSupplyDataCategory(officeSupplyDataCategory);
+		dataCategoryProfitSalesDiscount.setTechnologyDataCategory(technologyDataCategory);
+
+		return dataCategoryProfitSalesDiscount;
+	}
+
+	private DataCategoryProfitSalesDiscount allCountryData1(List<OrderEntity> orders) {
+
+		List<DataSalesDiscountProfit> dataAccessories = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataAppliances = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataArt = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataBinders = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataBookcases = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataChairs = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataCopiers = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataEnvelopes = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataFasteners = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataFurnishings = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataLabels = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataMachines = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataPaper = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataPhones = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataStorage = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataSupplies = new ArrayList<>();
+		List<DataSalesDiscountProfit> dataTables = new ArrayList<>();
+
+		for (int i = 0; i < orders.size(); i++) {
+			OrderEntity orderEntity = orders.get(i);
+
+			if (orderEntity.getCategory().contains("Technology")) {
+				if (orderEntity.getSubCategory().contains("Accessories")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataAccessories.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Copiers")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataCopiers.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Machines")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataMachines.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Phones")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataPhones.add(dataSalesDiscountProfit);
+				}
+			} else if (orderEntity.getCategory().contains("Furniture")) {
+				if (orderEntity.getSubCategory().contains("Bookcases")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataBookcases.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Chairs")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataChairs.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Furnishings")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataFurnishings.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Tables")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataTables.add(dataSalesDiscountProfit);
+				}
+			} else if (orderEntity.getCategory().contains("Office Supplies")) {
+				if (orderEntity.getSubCategory().contains("Appliances")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataAppliances.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Art")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataArt.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Binders")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataBinders.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Envelopes")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataEnvelopes.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Fasteners")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataFasteners.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Labels")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataLabels.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Paper")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataPaper.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Storage")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataStorage.add(dataSalesDiscountProfit);
+				} else if (orderEntity.getSubCategory().contains("Supplies")) {
+					DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+					BeanUtils.copyProperties(orderEntity, dataSalesDiscountProfit);
+					dataSupplies.add(dataSalesDiscountProfit);
+				}
+			}
+		}
+
+		Double zeroValue = (double) 0;
+		Double profit = zeroValue;
+		Double sales = zeroValue;
+		Double discount = zeroValue;
+
+		DataCategory dataCategory = new DataCategory();
+
+		if (dataAccessories.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Accessories");
+			dataAccessories.add(dataSalesDiscountProfit);
+			dataCategory.setDataAccessories(dataAccessories);
+		} else {
+			dataCategory.setDataAccessories(dataAccessories);
+		}
+		if (dataAppliances.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Appliances");
+			dataAppliances.add(dataSalesDiscountProfit);
+			dataCategory.setDataAppliances(dataAppliances);
+		} else {
+			dataCategory.setDataAppliances(dataAppliances);
+		}
+		if (dataArt.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Art");
+			dataArt.add(dataSalesDiscountProfit);
+			dataCategory.setDataArt(dataArt);
+		} else {
+			dataCategory.setDataArt(dataArt);
+		}
+		if (dataBinders.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Binders");
+			dataBinders.add(dataSalesDiscountProfit);
+			dataCategory.setDataBinders(dataBinders);
+		} else {
+			dataCategory.setDataBinders(dataBinders);
+		}
+		if (dataBookcases.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Bookcases");
+			dataBookcases.add(dataSalesDiscountProfit);
+			dataCategory.setDataBookcases(dataBookcases);
+		} else {
+			dataCategory.setDataBookcases(dataBookcases);
+		}
+		if (dataChairs.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Chairs");
+			dataChairs.add(dataSalesDiscountProfit);
+			dataCategory.setDataChairs(dataChairs);
+		} else {
+			dataCategory.setDataChairs(dataChairs);
+		}
+		if (dataCopiers.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Copiers");
+			dataCopiers.add(dataSalesDiscountProfit);
+			dataCategory.setDataCopiers(dataCopiers);
+		} else {
+			dataCategory.setDataCopiers(dataCopiers);
+		}
+		if (dataEnvelopes.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Envelopes");
+			dataEnvelopes.add(dataSalesDiscountProfit);
+			dataCategory.setDataEnvelopes(dataEnvelopes);
+		} else {
+			dataCategory.setDataEnvelopes(dataEnvelopes);
+		}
+		if (dataFasteners.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Fasteners");
+			dataFasteners.add(dataSalesDiscountProfit);
+			dataCategory.setDataFasteners(dataFasteners);
+		} else {
+			dataCategory.setDataFasteners(dataFasteners);
+		}
+
+		if (dataFurnishings.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Furnishings");
+			dataFurnishings.add(dataSalesDiscountProfit);
+			dataCategory.setDataFurnishings(dataFurnishings);
+		} else {
+			dataCategory.setDataFurnishings(dataFurnishings);
+		}
+		if (dataLabels.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Labels");
+			dataLabels.add(dataSalesDiscountProfit);
+			dataCategory.setDataLabels(dataLabels);
+		} else {
+			dataCategory.setDataLabels(dataLabels);
+		}
+		if (dataMachines.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Machines");
+			dataMachines.add(dataSalesDiscountProfit);
+			dataCategory.setDataMachines(dataMachines);
+		} else {
+			dataCategory.setDataMachines(dataMachines);
+		}
+		if (dataPaper.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Paper");
+			dataPaper.add(dataSalesDiscountProfit);
+			dataCategory.setDataPaper(dataPaper);
+		} else {
+			dataCategory.setDataPaper(dataPaper);
+		}
+		if (dataPhones.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Phones");
+			dataPhones.add(dataSalesDiscountProfit);
+			dataCategory.setDataPhones(dataPhones);
+		} else {
+			dataCategory.setDataPhones(dataPhones);
+		}
+		if (dataStorage.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Storage");
+			dataStorage.add(dataSalesDiscountProfit);
+			dataCategory.setDataStorage(dataStorage);
+		} else {
+			dataCategory.setDataStorage(dataStorage);
+		}
+		if (dataSupplies.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Supplies");
+			dataSupplies.add(dataSalesDiscountProfit);
+			dataCategory.setDataSupplies(dataSupplies);
+		} else {
+			dataCategory.setDataSupplies(dataSupplies);
+		}
+		if (dataTables.isEmpty()) {
+			DataSalesDiscountProfit dataSalesDiscountProfit = new DataSalesDiscountProfit();
+			dataSalesDiscountProfit.setDiscount(discount);
+			dataSalesDiscountProfit.setProfit(profit);
+			dataSalesDiscountProfit.setSales(sales);
+			dataSalesDiscountProfit.setSubCategory("Tables");
+			dataTables.add(dataSalesDiscountProfit);
+			dataCategory.setDataTables(dataTables);
+		} else {
+			dataCategory.setDataTables(dataTables);
+		}
 
 		TechnologyDataCategory technologyDataCategory = new TechnologyDataCategory();
 		technologyDataCategory.setDataAccessories(dataAccessories);
