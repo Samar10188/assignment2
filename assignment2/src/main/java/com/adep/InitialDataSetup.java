@@ -40,9 +40,9 @@ public class InitialDataSetup {
 	@Autowired
 	private OrderService orderService;
 
-	@EventListener // #comment this line
+//	@EventListener // #comment this line
 	public void onApplicationEvent(ApplicationReadyEvent event) throws IOException, ParseException {
-		System.out.println("Starting application....................");
+		System.out.println("Inittal Data Setup....................");
 
 //		List<OrderEntity> orders = orderService.getByYear("2011", ".*", ".*", ".*", ".*");
 

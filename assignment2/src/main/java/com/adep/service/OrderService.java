@@ -5,6 +5,7 @@ import java.util.List;
 import com.adep.dto.OrderDto;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
 import com.adep.shared.model.AllYearSalesProfitDiscountQuantity;
+import com.adep.shared.model.RegionSalesDiscountProfit;
 import com.adep.shared.model.SeriesData;
 
 public interface OrderService {
@@ -14,6 +15,7 @@ public interface OrderService {
 
 	AllSalesDiscountProfitValue getSalesProfitDiscountValueByCountry(String country);
 
-	AllYearSalesProfitDiscountQuantity getByYear(String category, String subCategory, String region,
-			String segment);
+	AllYearSalesProfitDiscountQuantity getByYear(String category, String subCategory, String region, String segment);
+
+	RegionSalesDiscountProfit getDataSubCategorySalesDiscountProfit(int n);
 }
