@@ -18,9 +18,12 @@ import com.adep.dto.OrderDto;
 import com.adep.entity.OrderEntity;
 import com.adep.repository.OrderRepository;
 import com.adep.service.OrderService;
+import com.adep.shared.model.AllCountrySalesReturn;
 import com.adep.shared.model.AllDataSalesDiscountCategory;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
 import com.adep.shared.model.AllYearSalesProfitDiscountQuantity;
+import com.adep.shared.model.CountrySales;
+import com.adep.shared.model.CountrySalesReturn;
 import com.adep.shared.model.DataCategory;
 import com.adep.shared.model.DataCategoryProfitSalesDiscount;
 import com.adep.shared.model.DataSalesDiscountProfit;
@@ -43,6 +46,81 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private OrderRepository orderRepository;
 
+	@Transactional
+	@Override
+	public AllCountrySalesReturn findRetunedOrder(int top) {
+	
+		List<Object[]> returned = orderRepository.findRetunedOrder();
+		Double zeroValue = (double) 0;
+		Double totalReturnedSales = zeroValue;
+		List<CountrySales> dataReturnedCountrySales = new ArrayList<CountrySales>();
+		for (int i = 0; i < returned.size(); i++) {
+			Object[] returnedCountrySales = returned.get(i);
+			CountrySales countrySale = new CountrySales();
+			countrySale.setCountry(String.valueOf(returnedCountrySales[0]));
+			Double returnSales = Double.parseDouble(String.valueOf(returnedCountrySales[1]));
+			countrySale.setSales(returnSales);
+			totalReturnedSales = totalReturnedSales + returnSales;
+			dataReturnedCountrySales.add(countrySale);
+		}
+
+		Collections.sort(dataReturnedCountrySales, Comparator.comparing(CountrySales::getCountry));
+
+		List<Object[]> sales = orderRepository.findCounrtySales();
+
+		Double totalSales = zeroValue;
+		List<CountrySales> dataCountrySales = new ArrayList<CountrySales>();
+		for (int i = 0; i < sales.size(); i++) {
+			Object[] countrySales = sales.get(i);
+			CountrySales countrySale = new CountrySales();
+			countrySale.setCountry(String.valueOf(countrySales[0]));
+			Double sale = Double.parseDouble(String.valueOf(countrySales[1]));
+			countrySale.setSales(sale);
+			totalSales = totalSales + sale;
+			dataCountrySales.add(countrySale);
+		}
+
+		List<CountrySalesReturn> countrySalesReturns = new ArrayList<CountrySalesReturn>();
+		for (CountrySales country : dataReturnedCountrySales) {
+			for (CountrySales country2 : dataCountrySales) {
+				if (country.getCountry().equalsIgnoreCase(country2.getCountry())) {
+					CountrySalesReturn countrySalesReturn = new CountrySalesReturn();
+					countrySalesReturn.setCountry(country.getCountry());
+					countrySalesReturn.setReturnSales(country.getSales());
+					countrySalesReturn.setSales(country2.getSales());
+					countrySalesReturns.add(countrySalesReturn);
+				}
+			}
+		}
+
+		Collections.sort(countrySalesReturns, Comparator.comparing(CountrySalesReturn::getReturnSales).reversed());
+
+		Double totalTopReturnedSales = zeroValue;
+		Double totalTopSales = zeroValue;
+
+		List<CountrySalesReturn> topCountrySalesReturn = new ArrayList<>();
+		if (top > countrySalesReturns.size() || top < 0) {
+			top = countrySalesReturns.size();
+		}
+		for (int i = 0; i < top; i++) {
+			totalTopReturnedSales = totalTopReturnedSales + countrySalesReturns.get(i).getReturnSales();
+			totalTopSales = totalTopSales + countrySalesReturns.get(i).getSales();
+			topCountrySalesReturn.add(countrySalesReturns.get(i));
+		}
+
+		System.out.println("Main list size : " + topCountrySalesReturn.size());
+
+		AllCountrySalesReturn allCountrySalesReturn = new AllCountrySalesReturn();
+
+		allCountrySalesReturn.setCountrySalesReturns(topCountrySalesReturn);
+		allCountrySalesReturn.setTotalReturnedSales(totalReturnedSales);
+		allCountrySalesReturn.setTotalSales(totalSales);
+		allCountrySalesReturn.setTotalTopReturnedSales(totalTopReturnedSales);
+		allCountrySalesReturn.setTotalTopSales(totalTopSales);
+
+		return allCountrySalesReturn;
+	}
+
 	@Override
 	public OrderDto getOderByOderId(String orderId) throws Exception {
 
@@ -55,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
 
 		return orderDto;
 	}
-	
+
 	@Transactional
 	@Override
 	public RegionSalesDiscountProfit getDataSubCategorySalesDiscountProfit(int top) {
@@ -247,7 +325,7 @@ public class OrderServiceImpl implements OrderService {
 
 		return allSalesDiscountProfitData;
 	}
-	
+
 	@Override
 	public List<SeriesData> getDataSalesDiscountProfit() {
 
@@ -299,7 +377,7 @@ public class OrderServiceImpl implements OrderService {
 
 		return seriesData;
 	}
-	
+
 	private SalesProfitDiscountQuantity totalDataSalesProfitDiscountQuantity(
 			List<YearSalesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity) {
 		Double zeroValue = (double) 0;
@@ -342,6 +420,11 @@ public class OrderServiceImpl implements OrderService {
 		Collections.sort(profitRegionEast, Comparator.comparing(SalesDiscountProfitSubCategory::getProfit).reversed());
 
 		List<SalesDiscountProfitSubCategory> topProfitRegion = new ArrayList<>();
+
+		if (top > profitRegionEast.size() || top < 0) {
+			top = profitRegionEast.size();
+		}
+
 		for (int i = 0; i < top; i++) {
 			topProfitRegion.add(profitRegionEast.get(i));
 		}

@@ -1,8 +1,10 @@
 package com.adep.service;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import com.adep.dto.UserDto;
 
-public interface UserService {
+public interface UserService  extends UserDetailsService{
 
 	UserDto saveUser(UserDto userDto);
 

@@ -3,6 +3,7 @@ package com.adep.service;
 import java.util.List;
 
 import com.adep.dto.OrderDto;
+import com.adep.shared.model.AllCountrySalesReturn;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
 import com.adep.shared.model.AllYearSalesProfitDiscountQuantity;
 import com.adep.shared.model.RegionSalesDiscountProfit;
@@ -17,5 +18,7 @@ public interface OrderService {
 
 	AllYearSalesProfitDiscountQuantity getByYear(String category, String subCategory, String region, String segment);
 
-	RegionSalesDiscountProfit getDataSubCategorySalesDiscountProfit(int n);
+	RegionSalesDiscountProfit getDataSubCategorySalesDiscountProfit(int top);
+
+	AllCountrySalesReturn findRetunedOrder(int top);
 }

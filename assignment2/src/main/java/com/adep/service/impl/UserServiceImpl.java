@@ -1,7 +1,12 @@
 package com.adep.service.impl;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.adep.dto.UserDto;
@@ -19,8 +24,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private Utils utils;
-
-
 
 	@Override
 	public UserDto saveUser(UserDto userDto) {
@@ -42,18 +45,16 @@ public class UserServiceImpl implements UserService {
 		return storedUserDto;
 	}
 
-	/*
-	 * @Override public UserDetails loadUserByUsername(String username) throws
-	 * UsernameNotFoundException { UserEntity storedUserDetails =
-	 * userRepository.findByUsername(username);
-	 * 
-	 * if (storedUserDetails == null) throw new UsernameNotFoundException(username);
-	 * 
-	 * return new User(storedUserDetails.getUsername(),
-	 * storedUserDetails.getPassword(), new ArrayList<>());
-	 * 
-	 * }
-	 */
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		UserEntity storedUserDetails = userRepository.findByUsername(username);
+
+		if (storedUserDetails == null)
+			throw new UsernameNotFoundException(username);
+
+		return new User(storedUserDetails.getUsername(), storedUserDetails.getPassword(), new ArrayList<>());
+
+	}
 
 	@Override
 	public UserDto getUser(String username) {

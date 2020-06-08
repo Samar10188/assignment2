@@ -44,28 +44,14 @@ public class InitialDataSetup {
 	public void onApplicationEvent(ApplicationReadyEvent event) throws IOException, ParseException {
 		System.out.println("Inittal Data Setup....................");
 
+		orderService.findRetunedOrder(15);
+
 //		List<OrderEntity> orders = orderService.getByYear("2011", ".*", ".*", ".*", ".*");
 
 		// Absolute path of excel
-//		String excelFilePath = "G:\\Infy\\ADEP\\work_space\\assignment2\\SuperStore.xlsx";
-//		orderEntityData(excelFilePath); // Call OrderEntity data method
+		String excelFilePath = "G:\\Infy\\ADEP\\work_space\\assignment2\\SuperStore.xlsx";
+		orderEntityData(excelFilePath); // Call OrderEntity data method
 //		returnEntityData(excelFilePath); // Call ReturnEntity data method
-		
-	
-		
-		/*
-		 * String category="all"; String subCategory="all"; String region="all"; String
-		 * segment="all";
-		 * 
-		 * if (category.contains("all")) { category = ".*"; } if
-		 * (subCategory.contains("all")) { subCategory = ".*"; } if
-		 * (region.contains("all")) { region = ".*"; } if (segment.contains("all")) {
-		 * segment = ".*"; }
-		 * 
-		 * List<YearSlaesProfitDiscountQuantity> yearsSalesProfitDiscountQuantity =
-		 * orderService.getByYear(category, subCategory, region, segment);
-		 */
-
 
 	}
 
@@ -199,7 +185,7 @@ public class InitialDataSetup {
 		}
 		System.out.println("Executing : " + dataList.size() + " records");
 		excelWorkBook.close();
-		orderRepository.saveAll(orderEntities); //#comment this line
+		orderRepository.saveAll(orderEntities); // #comment this line
 		System.out.println("Done with : " + dataList.size() + " records");
 	}
 

@@ -14,6 +14,7 @@ import com.adep.rest.response.OrderModelResponse;
 import com.adep.rest.response.SalesProfitDiscountValueResponse;
 import com.adep.rest.response.SeriesDataResponse;
 import com.adep.service.OrderService;
+import com.adep.shared.model.AllCountrySalesReturn;
 import com.adep.shared.model.AllSalesDiscountProfitValue;
 import com.adep.shared.model.AllYearSalesProfitDiscountQuantity;
 import com.adep.shared.model.RegionSalesDiscountProfit;
@@ -98,6 +99,15 @@ public class OrderController {
 				.getDataSubCategorySalesDiscountProfit(Integer.parseInt(top));
 
 		return regionSalesDiscountProfit;
+	}
+
+	@GetMapping("/getDataCountryReturned")
+	public AllCountrySalesReturn getDataCountryReturned(
+			@RequestParam(value = "top", defaultValue = "15", required = false) String top) {
+
+		AllCountrySalesReturn allCountrySalesReturn = orderService.findRetunedOrder(Integer.parseInt(top));
+
+		return allCountrySalesReturn;
 	}
 
 }
